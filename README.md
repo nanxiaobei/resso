@@ -1,7 +1,7 @@
 <div align="center">
-<h1>💰 resso</h1>
+<h1>resso</h1>
 
-Make $ a reactive state-manager for React
+Reactive Shared State for React
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
@@ -27,19 +27,17 @@ yarn add resso
 ## Usage
 
 ```jsx
-import useResso from 'resso';
+import resso from 'resso';
 
-const counter = {
-  count: 0,
-};
+const useCounter = resso({ count: 0 });
 
 function Counter() {
-  const $ = useResso(counter);
+  const state = useCounter();
 
   return (
     <>
-      <p>{$.count}</p>
-      <button onClick={() => $.count++}>+</button>
+      <p>{state.count}</p>
+      <button onClick={() => state.count++}>+</button>
     </>
   );
 }
@@ -52,9 +50,11 @@ function Counter() {
 ## API
 
 ```js
-import useResso from 'resso';
+import resso from 'resso';
 
-const $ = useResso({ key: 'value' });
+const useStore = resso({ count: 0 });
+
+const state = useStore();
 ```
 
 ## License

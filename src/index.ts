@@ -1,52 +1,50 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 
-export type Money = { [key: string]: any };
+type State = { [key: string]: any };
 type Updater = (key: string) => void;
-type UseResso = (money: Money) => Money;
+type Resso = (state: State) => () => State;
 type Handler = { get: (t: any, k: string) => any; set: (t: any, k: string, v: any) => true };
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
-const NOOP = () => () => {};
-const ERR_MONEY = 'money should be an object';
+const NOOP = () => {};
+const ERR_STATE = 'state should be an object';
 const notObj = (val: any) => Object.prototype.toString.call(val) !== '[object Object]';
 
-const map: WeakMap<Money, Updater[]> = new WeakMap();
+const resso: Resso = (state: State) => {
+  if (__DEV__ && notObj(state)) throw new Error(ERR_STATE);
+  const updaters: Updater[] = [];
 
-const useResso: UseResso = (money) => {
-  if (__DEV__ && notObj(money)) throw new Error(ERR_MONEY);
+  return () => {
+    const [, setState] = useState(false);
+    const onEffect = useRef(NOOP);
+    useEffect(() => onEffect.current(), []);
 
-  const [, setState] = useState(false);
-  const onEffect = useRef(NOOP);
+    return useMemo(() => {
+      const target: State = {};
+      const handler: Handler = {
+        get: (_, key) => {
+          if (!target[key]) target[key] = true;
+          return state[key];
+        },
+        set: (_, key, val) => {
+          state[key] = val;
+          for (let i = 0; i < updaters.length; i++) updaters[i](key);
+          return true;
+        },
+      };
 
-  const cash = useMemo(() => {
-    const updaters: Updater[] = map.get(money) || [];
-    if (updaters.length === 0) map.set(money, updaters);
+      onEffect.current = () => {
+        handler.get = (_, key) => state[key];
+        const updater: Updater = (key) => target[key] && setState((s) => !s);
+        updaters.push(updater);
+        return () => {
+          updaters.splice(updaters.indexOf(updater), 1);
+        };
+      };
 
-    const target: Money = {};
-    const handler: Handler = {
-      get: (_, key) => {
-        if (!target[key]) target[key] = true;
-        return money[key];
-      },
-      set: (_, key, val) => {
-        money[key] = val;
-        for (let i = 0; i < updaters.length; i++) updaters[i](key);
-        return true;
-      },
-    };
-
-    onEffect.current = () => {
-      handler.get = (_, key) => money[key];
-      const updater: Updater = (key) => target[key] && setState((s) => !s);
-      updaters.push(updater);
-      return () => updaters.splice(updaters.indexOf(updater), 1);
-    };
-
-    return new Proxy(target, handler);
-  }, [money]);
-
-  useEffect(() => onEffect.current(), []);
-  return cash;
+      return new Proxy(state, handler);
+    }, []);
+  };
 };
 
-export default useResso;
+export default resso;

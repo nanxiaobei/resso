@@ -2,7 +2,7 @@ import 'jsdom-global/register';
 import React from 'react';
 import { configure, mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import useResso from './index.ts';
+import resso from './index.ts';
 
 configure({ adapter: new Adapter() });
 
@@ -10,32 +10,32 @@ console.error = jest.fn((msg) => {
   if (!msg.includes('test was not wrapped in act(...)')) throw new Error(msg);
 });
 
-test('useResso', () => {
-  const counter = {
+test('resso', () => {
+  const useCounter = resso({
     count: 0,
     open: false,
-  };
+  });
 
   const Counter1 = () => {
-    const $ = useResso(counter);
+    const state = useCounter();
 
     return (
       <>
-        <p>{$.count}</p>
-        <p>{$.count}</p>
+        <p>{state.count}</p>
+        <p>{state.count}</p>
       </>
     );
   };
 
   const Counter2 = () => {
-    const $ = useResso(counter);
+    const state = useCounter();
 
     return (
       <>
-        <p>{$.count}</p>
-        <p>{$.open}</p>
-        <button id="add" onClick={() => $.count++} />
-        <button id="toggle" onClick={() => ($.open = false)} />
+        <p>{state.count}</p>
+        <p>{state.open}</p>
+        <button id="add" onClick={() => state.count++} />
+        <button id="toggle" onClick={() => (state.open = false)} />
       </>
     );
   };
@@ -48,7 +48,7 @@ test('useResso', () => {
   click(wrapper2, '#add');
   click(wrapper2, '#toggle');
 
-  error(() => useResso());
+  error(() => resso());
   wrapper1.unmount();
   wrapper2.unmount();
 });
