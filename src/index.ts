@@ -2,15 +2,14 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 
 type State = { [key: string]: any };
 type Updater = (key: string) => void;
-type Resso = (state: State) => () => State;
 type Handler = { get: (t: any, k: string) => any; set: (t: any, k: string, v: any) => true };
 
-const __DEV__ = process.env.NODE_ENV !== 'production';
 const NOOP = () => {};
 const ERR_STATE = 'state should be an object';
+const __DEV__ = process.env.NODE_ENV !== 'production';
 const notObj = (val: any) => Object.prototype.toString.call(val) !== '[object Object]';
 
-const resso: Resso = (state: State) => {
+const resso = (state: State) => {
   if (__DEV__ && notObj(state)) throw new Error(ERR_STATE);
   const updaters: Updater[] = [];
 
