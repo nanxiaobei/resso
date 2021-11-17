@@ -29,15 +29,35 @@ yarn add resso
 ```jsx
 import resso from 'resso';
 
-const useCounter = resso({ count: 0 });
+const useCounter = resso({
+  text: 'hi, 🪢 resso',
+  count: 0,
+});
 
-function Counter() {
+// No `state.text` update, no re-render
+function Text() {
   const state = useCounter();
+  return <p>{state.text}</p>;
+}
 
+// Only when `state.count` update, re-render
+function Count() {
+  const state = useCounter();
+  return <p>{state.count}</p>;
+}
+
+// No `state.count` in display, no re-render
+function Controls() {
+  const state = useCounter();
+  return <button onClick={() => state.count++}>+</button>;
+}
+
+function App() {
   return (
     <>
-      <p>{state.count}</p>
-      <button onClick={() => state.count++}>+</button>
+      <Text />
+      <Count />
+      <Controls />
     </>
   );
 }
@@ -52,7 +72,7 @@ function Counter() {
 ```js
 import resso from 'resso';
 
-const useStore = resso({ key: 'value' });
+const useShared = resso({ key: 'value' });
 ```
 
 ## License
