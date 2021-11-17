@@ -1,0 +1,75 @@
+{
+  "name": "resso",
+  "version": "0.0.1",
+  "description": "Make $ a reactive state-manager for React",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "hooks",
+    "flux",
+    "redux",
+    "store",
+    "model",
+    "state",
+    "resso"
+  ],
+  "repository": "https://github.com/nanxiaobei/resso.git",
+  "author": "nanxiaobei <nanxiaobei@gmail.com>",
+  "homepage": "https://github.com/nanxiaobei/resso",
+  "bugs": "https://github.com/nanxiaobei/resso/issues",
+  "main": "dist/resso.cjs.js",
+  "module": "dist/resso.esm.js",
+  "types": "dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist coverage && rollup -c",
+    "test": "jest",
+    "codecov": "codecov"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.16.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.16.4",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.7",
+    "@types/react": "^17.0.35",
+    "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.5",
+    "codecov": "^3.8.3",
+    "enzyme": "^3.11.0",
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "jest": "^27.3.1",
+    "jsdom": "^18.1.0",
+    "jsdom-global": "^3.0.2",
+    "prettier": "^2.4.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rollup": "^2.60.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-dts": "^4.0.1",
+    "typescript": "^4.4.4"
+  },
+  "eslintIgnore": [
+    "dist"
+  ],
+  "jest": {
+    "collectCoverage": true
+  }
+}
