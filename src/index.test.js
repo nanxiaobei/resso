@@ -7,11 +7,9 @@ import resso from './index.ts';
 configure({ adapter: new Adapter() });
 
 console.error = jest.fn((msg) => {
-  if (!msg.includes('test was not wrapped in act(...)')) throw new Error(msg);
+  if (msg.includes('test was not wrapped in act(...)')) return;
+  throw new Error(msg);
 });
-
-const error = (fn) => expect(fn).toThrow();
-const click = (wrapper, btn) => wrapper.find(btn).simulate('click');
 
 test('resso', () => {
   const useCounter = resso({
@@ -31,8 +29,11 @@ test('resso', () => {
   };
 
   const wrapper = mount(<Counter />);
+  const error = (fn) => expect(fn).toThrow();
+  const click = (btn) => wrapper.find(btn).simulate('click');
+
   error(() => resso());
-  click(wrapper, '#add');
+  click('#add');
 
   wrapper.unmount();
 });
