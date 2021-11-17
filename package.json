@@ -1,7 +1,7 @@
 {
   "name": "resso",
   "version": "0.0.2",
-  "description": "Reactive Shared State for React",
+  "description": "Reactive shared state for React",
   "license": "MIT",
   "keywords": [
     "react",
