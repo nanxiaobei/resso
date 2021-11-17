@@ -9,7 +9,6 @@
     "flux",
     "redux",
     "store",
-    "model",
     "state",
     "resso"
   ],
