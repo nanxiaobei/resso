@@ -52,9 +52,7 @@ function Counter() {
 ```js
 import resso from 'resso';
 
-const useStore = resso({ count: 0 });
-
-const state = useStore();
+const useStore = resso({ key: 'value' });
 ```
 
 ## 协议
