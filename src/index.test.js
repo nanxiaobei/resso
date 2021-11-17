@@ -10,45 +10,29 @@ console.error = jest.fn((msg) => {
   if (!msg.includes('test was not wrapped in act(...)')) throw new Error(msg);
 });
 
+const error = (fn) => expect(fn).toThrow();
+const click = (wrapper, btn) => wrapper.find(btn).simulate('click');
+
 test('resso', () => {
   const useCounter = resso({
     count: 0,
-    open: false,
   });
 
-  const Counter1 = () => {
+  const Counter = () => {
     const state = useCounter();
 
     return (
       <>
         <p>{state.count}</p>
         <p>{state.count}</p>
-      </>
-    );
-  };
-
-  const Counter2 = () => {
-    const state = useCounter();
-
-    return (
-      <>
-        <p>{state.count}</p>
-        <p>{state.open}</p>
         <button id="add" onClick={() => state.count++} />
-        <button id="toggle" onClick={() => (state.open = false)} />
       </>
     );
   };
 
-  const wrapper1 = mount(<Counter1 />);
-  const wrapper2 = mount(<Counter2 />);
-  const click = (wrapper, btn) => wrapper.find(btn).simulate('click');
-  const error = (fn) => expect(fn).toThrow();
-
-  click(wrapper2, '#add');
-  click(wrapper2, '#toggle');
-
+  const wrapper = mount(<Counter />);
   error(() => resso());
-  wrapper1.unmount();
-  wrapper2.unmount();
+  click(wrapper, '#add');
+
+  wrapper.unmount();
 });
