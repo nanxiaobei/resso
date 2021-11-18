@@ -47,7 +47,7 @@ function Count() {
 }
 
 // 无 `state.count` 在视图中，无 re-render
-function Controls() {
+function Control() {
   const state = useCounter();
   return <button onClick={() => state.count++}>+</button>;
 }
@@ -57,7 +57,7 @@ function App() {
     <>
       <Text />
       <Count />
-      <Controls />
+      <Control />
     </>
   );
 }

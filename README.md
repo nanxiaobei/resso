@@ -47,7 +47,7 @@ function Count() {
 }
 
 // No `state.count` in display, no re-render
-function Controls() {
+function Control() {
   const state = useCounter();
   return <button onClick={() => state.count++}>+</button>;
 }
@@ -57,7 +57,7 @@ function App() {
     <>
       <Text />
       <Count />
-      <Controls />
+      <Control />
     </>
   );
 }
