@@ -3,6 +3,8 @@
 
 Reactive shared state of React
 
+Simple, simple, simple
+
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
 [![Codecov](https://img.shields.io/codecov/c/github/nanxiaobei/resso?style=flat-square)](https://codecov.io/gh/nanxiaobei/resso)
@@ -34,19 +36,19 @@ const useCounter = resso({
   count: 0,
 });
 
-// No `state.text` update, no re-render
+// No state.text update, no re-render
 function Text() {
   const state = useCounter();
   return <p>{state.text}</p>;
 }
 
-// Only when `state.count` update, re-render
+// Only when state.count update, re-render
 function Count() {
   const state = useCounter();
   return <p>{state.count}</p>;
 }
 
-// No `state.count` in display, no re-render
+// No state.count in view, no re-render
 function Control() {
   const state = useCounter();
   return <button onClick={() => state.count++}>+</button>;

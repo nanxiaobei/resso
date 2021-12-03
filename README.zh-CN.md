@@ -3,6 +3,8 @@
 
 React 响应式共享 state
 
+简单，简单，简单
+
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
 [![Codecov](https://img.shields.io/codecov/c/github/nanxiaobei/resso?style=flat-square)](https://codecov.io/gh/nanxiaobei/resso)
@@ -34,19 +36,19 @@ const useCounter = resso({
   count: 0,
 });
 
-// 无 `state.text` 更新，无 re-render
+// 无 state.text 更新，无 re-render
 function Text() {
   const state = useCounter();
   return <p>{state.text}</p>;
 }
 
-// 只在 `state.count` 更新时，re-render
+// 只在 state.count 更新时，re-render
 function Count() {
   const state = useCounter();
   return <p>{state.count}</p>;
 }
 
-// 无 `state.count` 在视图中，无 re-render
+// 无 state.count 在视图中，无 re-render
 function Control() {
   const state = useCounter();
   return <button onClick={() => state.count++}>+</button>;
