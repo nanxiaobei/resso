@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 
+type Noop = () => void;
 type State = { [key: string]: any };
 type Updater = (key: string) => void;
-type Handler = { get: (t: any, k: string) => any; set: (t: any, k: string, v: any) => true };
+type Handler = { get?: (t: any, k: string) => any; set: (t: any, k: string, v: any) => true };
 
-const NOOP = () => {};
+const NOOP = () => undefined;
 const ERR_STATE = 'state should be an object';
 const __DEV__ = process.env.NODE_ENV !== 'production';
 const notObj = (val: any) => Object.prototype.toString.call(val) !== '[object Object]';
@@ -15,8 +16,8 @@ const resso = (state: State) => {
 
   return () => {
     const [, setState] = useState(false);
-    const onEffect = useRef(NOOP);
-    useEffect(() => onEffect.current(), []);
+    const onMount = useRef<Noop>(NOOP);
+    useEffect(() => onMount.current(), []);
 
     return useMemo(() => {
       const target: State = {};
@@ -32,13 +33,14 @@ const resso = (state: State) => {
         },
       };
 
-      onEffect.current = () => {
+      onMount.current = () => {
         handler.get = (_, key) => state[key];
-        const updater: Updater = (key) => target[key] && setState((s) => !s);
-        updaters.push(updater);
-        return () => {
-          updaters.splice(updaters.indexOf(updater), 1);
-        };
+
+        if (Object.keys(target).length > 0) {
+          const updater: Updater = (key) => target[key] && setState((s) => !s);
+          updaters.push(updater);
+          return () => updaters.splice(updaters.indexOf(updater), 1);
+        }
       };
 
       return new Proxy(state, handler);
