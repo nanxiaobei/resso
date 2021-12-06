@@ -18,12 +18,13 @@ test('resso', () => {
 
   const Counter = () => {
     const state = useCounter();
+    const stateCopy = useCounter();
 
     return (
       <>
         <p>{state.count}</p>
         <p>{state.count}</p>
-        <button id="add" onClick={() => state.count++} />
+        <button id="add" onClick={() => stateCopy.count++} />
       </>
     );
   };
