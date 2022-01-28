@@ -12,29 +12,32 @@ console.error = jest.fn((msg) => {
 });
 
 test('resso', () => {
-  const useCounter = resso({
+  const snap = resso({
     count: 0,
+    inc: () => snap.count++,
   });
 
-  const Counter = () => {
-    const state = useCounter();
-    const stateCopy = useCounter();
+  const App = () => {
+    const { count } = snap;
 
     return (
       <>
-        <p>{state.count}</p>
-        <p>{state.count}</p>
-        <button id="add" onClick={() => stateCopy.count++} />
+        <p>{count}</p>
+        <button id="add1" onClick={snap.inc} />
+        <button id="add2" onClick={() => snap.count++} />
+        <button id="add3" onClick={() => (snap.count = count)} />
       </>
     );
   };
 
-  const wrapper = mount(<Counter />);
+  const wrapper = mount(<App />);
   const error = (fn) => expect(fn).toThrow();
   const click = (btn) => wrapper.find(btn).simulate('click');
 
   error(() => resso());
-  click('#add');
+  click('#add1');
+  click('#add2');
+  click('#add3');
 
   wrapper.unmount();
 });
