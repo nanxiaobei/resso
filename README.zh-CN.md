@@ -1,9 +1,9 @@
 <div align="center">
 <h1>🪢 resso</h1>
 
-React 响应式共享 state
+React 响应式共享 store
 
-简单，简单，简单
+无额外 re-render，极其简单!
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
@@ -31,27 +31,23 @@ yarn add resso
 ```jsx
 import resso from 'resso';
 
-const useCounter = resso({
-  text: 'hi, 🪢 resso',
-  count: 0,
-});
+const snap = resso({ count: 0, text: 'hello' });
 
-// 无 state.text 更新，无 re-render
+// 无 text 更新，无 re-render
 function Text() {
-  const state = useCounter();
-  return <p>{state.text}</p>;
+  const { text } = snap;
+  return <p>{text}</p>;
 }
 
-// 只在 state.count 更新时，re-render
+// 只在 count 更新时，re-render
 function Count() {
-  const state = useCounter();
-  return <p>{state.count}</p>;
+  const { count } = snap;
+  return <p>{count}</p>;
 }
 
-// 无 state.count 在视图中，无 re-render
+// 无 count 在视图中，无 re-render
 function Control() {
-  const state = useCounter();
-  return <button onClick={() => state.count++}>+</button>;
+  return <button onClick={() => snap.count++}>+</button>;
 }
 
 function App() {
@@ -74,7 +70,7 @@ function App() {
 ```js
 import resso from 'resso';
 
-const useShared = resso({ key: 'value' });
+const snap = resso({ count: 0, inc: () => snap.count++ });
 ```
 
 ## 协议
