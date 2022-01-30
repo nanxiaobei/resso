@@ -33,29 +33,41 @@ import resso from 'resso';
 
 const snap = resso({ count: 0, text: 'hello' });
 
+function App() {
+  return (
+    <>
+      {snap.count}
+      <button onClick={() => snap.count++}>+</button>
+    </>
+  );
+}
+```
+
+## Re-render
+
+```jsx
+const snap = resso({
+  count: 0,
+  text: 'hello',
+  inc: () => snap.count++,
+});
+
 // 无 text 更新，无 re-render
 function Text() {
-  const { text } = snap;
-  return <p>{text}</p>;
+  return <p>{snap.text}</p>;
 }
 
 // 只在 count 更新时，re-render
 function Count() {
-  const { count } = snap;
-  return <p>{count}</p>;
+  return <p>{snap.count}</p>;
 }
 
 // 无 count 在视图中，无 re-render
 function Control() {
-  return <button onClick={() => snap.count++}>+</button>;
-}
-
-function App() {
   return (
     <>
-      <Text />
-      <Count />
-      <Control />
+      <button onClick={snap.inc}>+</button>
+      <button onClick={() => snap.count--}>-</button>
     </>
   );
 }
