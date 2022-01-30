@@ -18,14 +18,12 @@ test('resso', () => {
   });
 
   const App = () => {
-    const { count } = snap;
-
     return (
       <>
-        <p>{count}</p>
+        <p>{snap.count}</p>
         <button id="add1" onClick={snap.inc} />
         <button id="add2" onClick={() => snap.count++} />
-        <button id="add3" onClick={() => (snap.count = count)} />
+        <button id="add3" onClick={() => (snap.count = +snap.count)} />
       </>
     );
   };
