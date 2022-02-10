@@ -1,9 +1,9 @@
 <div align="center">
 <h1>🪢 resso</h1>
 
-Reactive shared store of React
+World's Simplest React State Manager
 
-No extra re-render, extremely simple!
+**Re**active **s**hared **s**tore **o**f React. No extra re-render, 0.46kb
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)

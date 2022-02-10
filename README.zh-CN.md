@@ -1,9 +1,9 @@
 <div align="center">
 <h1>🪢 resso</h1>
 
-React 响应式共享 store
+世界上最简单的 React 状态管理器
 
-无额外 re-render，极其简单!
+**Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render，0.46kb
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
