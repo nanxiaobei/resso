@@ -34,7 +34,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store;
+  const { count } = store; // 先解构，再使用
   return (
     <>
       {count}
@@ -65,7 +65,7 @@ function Count() {
   return <p>{count}</p>;
 }
 
-// 无 count 在视图中，无 re-render
+// 无 state 在视图中，无 re-render
 function Control() {
   const { inc } = store;
   return (
@@ -87,6 +87,9 @@ function Control() {
 import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
+
+// 因数据是以 useState 注入组件，所以请在组件最顶层（即 Hooks 规则），先解构，再使用
+const { count, inc } = store;
 ```
 
 ## 协议

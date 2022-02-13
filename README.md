@@ -34,7 +34,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store;
+  const { count } = store; // destructure first, then use
   return (
     <>
       {count}
@@ -65,7 +65,7 @@ function Count() {
   return <p>{count}</p>;
 }
 
-// No count in view, no re-render
+// No state in view, no re-render
 function Control() {
   const { inc } = store;
   return (
@@ -87,6 +87,10 @@ function Control() {
 import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
+
+// The data is injected to the component by useState,
+// so at the top level of the component (Hooks rules), destructure first, then use
+const { count, inc } = store;
 ```
 
 ## License
