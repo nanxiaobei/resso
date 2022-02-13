@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, Dispatch, SetStateAction } from 'react';
-import { unstable_batchedUpdates } from 'react-dom';
+import { unstable_batchedUpdates as batch } from 'react-dom';
 
 type Store = Record<string, any>;
 type State<T> = { [K in keyof T]: () => T[K] };
@@ -16,17 +16,19 @@ function resso<T extends Store>(store: T): T {
 
   Object.keys(store).forEach((key: keyof T) => {
     const initValue = store[key];
-    if (typeof initValue !== 'function') {
-      const listeners: Set<Dispatch<SetStateAction<T[keyof T]>>> = new Set();
-      setter[key] = listeners;
-      const Render = () => {
-        const [value, setValue] = useState(initValue);
-        useMemo(() => listeners.add(setValue), []);
-        useEffect(() => () => listeners.delete(setValue) as unknown as void, []);
-        return value;
-      };
-      state[key] = Render;
-    }
+    if (typeof initValue === 'function') return;
+
+    const listeners: Set<Dispatch<SetStateAction<T[keyof T]>>> = new Set();
+    setter[key] = listeners;
+
+    const Render = () => {
+      const [value, setValue] = useState(initValue);
+      useMemo(() => listeners.add(setValue), []);
+      useEffect(() => () => listeners.delete(setValue) as unknown as void, []);
+      return value;
+    };
+
+    state[key] = Render;
   });
 
   return new Proxy(store, {
@@ -44,9 +46,7 @@ function resso<T extends Store>(store: T): T {
           setter[key].forEach((setValue) => setValue(val));
         };
         /* istanbul ignore next */
-        typeof unstable_batchedUpdates === 'function'
-          ? unstable_batchedUpdates(updater)
-          : updater();
+        typeof batch === 'function' ? batch(updater) : updater();
       }
       return true;
     },
