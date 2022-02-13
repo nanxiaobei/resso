@@ -12,18 +12,19 @@ console.error = jest.fn((msg) => {
 });
 
 test('resso', () => {
-  const snap = resso({
+  const store = resso({
     count: 0,
-    inc: () => snap.count++,
+    inc: () => store.count++,
   });
 
   const App = () => {
+    const { count, inc } = store;
     return (
       <>
-        <p>{snap.count}</p>
-        <button id="add1" onClick={snap.inc} />
-        <button id="add2" onClick={() => snap.count++} />
-        <button id="add3" onClick={() => (snap.count = +snap.count)} />
+        <p>{count}</p>
+        <button id="add1" onClick={inc} />
+        <button id="add2" onClick={() => store.count++} />
+        <button id="add3" onClick={() => (store.count = +count)} />
       </>
     );
   };

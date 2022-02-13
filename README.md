@@ -31,13 +31,14 @@ yarn add resso
 ```jsx
 import resso from 'resso';
 
-const snap = resso({ count: 0, text: 'hello' });
+const store = resso({ count: 0, text: 'hello' });
 
 function App() {
+  const { count } = store;
   return (
     <>
-      {snap.count}
-      <button onClick={() => snap.count++}>+</button>
+      {count}
+      <button onClick={() => store.count++}>+</button>
     </>
   );
 }
@@ -46,28 +47,31 @@ function App() {
 ## Re-render
 
 ```jsx
-const snap = resso({
+const store = resso({
   count: 0,
   text: 'hello',
-  inc: () => snap.count++,
+  inc: () => store.count++,
 });
 
 // No text update, no re-render
 function Text() {
-  return <p>{snap.text}</p>;
+  const { text } = store;
+  return <p>{text}</p>;
 }
 
 // Only count update, re-render
 function Count() {
-  return <p>{snap.count}</p>;
+  const { count } = store;
+  return <p>{count}</p>;
 }
 
 // No count in view, no re-render
 function Control() {
+  const { inc } = store;
   return (
     <>
-      <button onClick={snap.inc}>+</button>
-      <button onClick={() => snap.count--}>-</button>
+      <button onClick={inc}>+</button>
+      <button onClick={() => store.count--}>-</button>
     </>
   );
 }
@@ -82,7 +86,7 @@ function Control() {
 ```js
 import resso from 'resso';
 
-const snap = resso({ count: 0, inc: () => snap.count++ });
+const store = resso({ count: 0, inc: () => store.count++ });
 ```
 
 ## License
