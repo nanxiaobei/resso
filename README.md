@@ -58,7 +58,7 @@ const store = resso({ count: 0, inc: () => store.count++ });
 const { count, inc } = store; // in a component
 ```
 
-\* Store data are injected by useState, please ensure to **destructure first, at the top level of a component** (Hooks rules), then use, or you may get React warning.
+Store data are injected by useState, so please ensure to **destructure first, at the top level of a component** (Hooks rules), then use, or you may get React warning.
 
 ## Re-render
 

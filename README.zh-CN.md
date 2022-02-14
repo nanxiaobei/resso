@@ -58,7 +58,7 @@ const store = resso({ count: 0, inc: () => store.count++ });
 const { count, inc } = store; // 在组件中
 ```
 
-\* Store 数据以 useState 注入，所以请确保**先解构，在组件最顶层**（即 Hooks 规则），然后再使用。要不然将会有 React warning。
+Store 数据以 useState 注入，所以请确保**先解构，在组件最顶层**（即 Hooks 规则），然后再使用，要不然将会有 React warning。
 
 ## Re-render
 
