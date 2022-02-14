@@ -44,6 +44,22 @@ function App() {
 }
 ```
 
+## Demo
+
+[![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
+
+## API
+
+```js
+import resso from 'resso';
+
+const store = resso({ count: 0, inc: () => store.count++ });
+
+const { count, inc } = store; // in a component
+```
+
+\* Store data are injected by useState, please ensure to **destructure first, at the top level of a component** (Hooks rules), then use, or you may get React warning.
+
 ## Re-render
 
 ```jsx
@@ -75,22 +91,6 @@ function Control() {
     </>
   );
 }
-```
-
-## Demo
-
-[![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
-
-## API
-
-```js
-import resso from 'resso';
-
-const store = resso({ count: 0, inc: () => store.count++ });
-
-// The data is injected to the component by useState,
-// so at the top level of the component (Hooks rules), destructure first, then use
-const { count, inc } = store;
 ```
 
 ## License
