@@ -15,14 +15,13 @@ function resso<T extends Store>(store: T): T {
   const setter: Setter<T> = {} as Setter<T>;
 
   Object.keys(store).forEach((key: keyof T) => {
-    const initValue = store[key];
-    if (typeof initValue === 'function') return;
+    if (typeof store[key] === 'function') return;
 
     const listeners: Set<Dispatch<SetStateAction<T[keyof T]>>> = new Set();
     setter[key] = listeners;
 
     const Render = () => {
-      const [value, setValue] = useState(initValue);
+      const [value, setValue] = useState(() => store[key]);
       useMemo(() => listeners.add(setValue), []);
       useEffect(() => () => listeners.delete(setValue) as unknown as void, []);
       return value;
