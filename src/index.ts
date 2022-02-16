@@ -21,7 +21,7 @@ function resso<T extends Store>(store: T): T {
     setter[key] = listeners;
 
     const Render = () => {
-      const [value, setValue] = useState(() => store[key]);
+      const [value, setValue] = useState(store[key]);
       useMemo(() => listeners.add(setValue), []);
       useEffect(() => () => listeners.delete(setValue) as unknown as void, []);
       return value;
