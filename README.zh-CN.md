@@ -3,7 +3,7 @@
 
 世界上最简单的 React 状态管理器
 
-**Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render，0.46kb
+**Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render，0.45kb
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
@@ -55,7 +55,7 @@ import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
 
-const { count, inc } = store; // 在组件中
+const { count, inc } = store; // 在组件内顶层
 ```
 
 Store 数据是以 useState 注入，所以请确保**先解构，在组件最顶层**（即 Hooks 规则），然后再使用，否则将会有 React warning。
@@ -81,7 +81,7 @@ function Count() {
   return <p>{count}</p>;
 }
 
-// 无 state 在视图中，无 re-render
+// 无数据在视图中，无 re-render
 function Control() {
   const { inc } = store;
   return (

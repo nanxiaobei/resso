@@ -3,7 +3,7 @@
 
 World's Simplest React State Manager
 
-**Re**active **s**hared **s**tore **o**f React. No extra re-render, 0.46kb
+**Re**active **s**hared **s**tore **o**f React. No extra re-render, 0.45kb
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
@@ -55,7 +55,7 @@ import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
 
-const { count, inc } = store; // in a component
+const { count, inc } = store; // top level in a component
 ```
 
 Store data are injected by useState, so please ensure to **destructure first, at the top level of a component** (Hooks rules), then use, or you may get React warning.
@@ -81,7 +81,7 @@ function Count() {
   return <p>{count}</p>;
 }
 
-// No state in view, no re-render
+// No data in view, no re-render
 function Control() {
   const { inc } = store;
   return (
