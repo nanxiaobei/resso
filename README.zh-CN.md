@@ -55,10 +55,12 @@ import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
 
-const { count, inc } = store; // 在组件内顶层
+function App() {
+  // store 数据是以 useState 注入组件，所以请确保先解构，
+  // 在组件最顶层（Hooks 规则），再使用，否则将有 React 报错
+  const { count, inc } = store;
+}
 ```
-
-Store 数据是以 useState 注入，所以请确保**先解构，在组件最顶层**（即 Hooks 规则），然后再使用，否则将会有 React warning。
 
 ## Re-render
 

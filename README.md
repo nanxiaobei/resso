@@ -55,10 +55,12 @@ import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
 
-const { count, inc } = store; // top level in a component
+function App() {
+  // store data are injected by useState, so please ensure to destructure first,
+  // top level in a component (Hooks rules), then use, or may get React warning
+  const { count, inc } = store;
+}
 ```
-
-Store data are injected by useState, so please ensure to **destructure first, at the top level of a component** (Hooks rules), then use, or you may get React warning.
 
 ## Re-render
 
