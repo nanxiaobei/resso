@@ -1,17 +1,13 @@
-import 'jsdom-global/register';
 import React from 'react';
+import { it, expect } from 'vitest';
 import { configure, mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import resso from './index.ts';
+import 'jsdom-global/register';
+import resso from './index';
 
 configure({ adapter: new Adapter() });
 
-console.error = jest.fn((msg) => {
-  if (msg.includes('test was not wrapped in act(...)')) return;
-  throw new Error(msg);
-});
-
-test('resso', () => {
+it('resso', () => {
   const store = resso({
     count: 0,
     inc: () => store.count++,
@@ -30,9 +26,11 @@ test('resso', () => {
   };
 
   const wrapper = mount(<App />);
-  const error = (fn) => expect(fn).toThrow();
-  const click = (btn) => wrapper.find(btn).simulate('click');
+  const error = (fn: () => void) => expect(fn).toThrow();
+  const click = (btn: string) => wrapper.find(btn).simulate('click');
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   error(() => resso());
   click('#add1');
   click('#add2');

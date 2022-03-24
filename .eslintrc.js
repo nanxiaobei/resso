@@ -21,19 +21,4 @@ module.exports = {
   settings: {
     'import/resolver': { node: { extensions: ['.js', '.ts'] } },
   },
-  overrides: [
-    {
-      files: 'src/*.test.js',
-      env: {
-        jest: true,
-      },
-    },
-  ],
-  rules: {
-    'consistent-return': 'off',
-    'no-param-reassign': 'off',
-    'no-underscore-dangle': 'off',
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-  },
 };
