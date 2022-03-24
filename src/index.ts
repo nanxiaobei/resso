@@ -1,10 +1,14 @@
-import { useState, useEffect, useMemo, Dispatch, SetStateAction } from 'react';
-import { unstable_batchedUpdates as batch } from 'react-dom';
+import { useState, useEffect, useLayoutEffect } from 'react';
+import ReactDOM from 'react-dom';
+import type { Dispatch, SetStateAction } from 'react';
 
 type Store = Record<string, any>;
 type State<T> = { [K in keyof T]: () => T[K] };
 type Setter<T> = { [key in keyof T]: Set<Dispatch<SetStateAction<T[keyof T]>>> };
 
+const isSSR = typeof window === 'undefined';
+const useIsomorphicLayoutEffect = isSSR ? useEffect : /* c8 ignore next */ useLayoutEffect;
+const batch = ReactDOM.unstable_batchedUpdates;
 const __DEV__ = process.env.NODE_ENV !== 'production';
 const notObj = (val: any) => Object.prototype.toString.call(val) !== '[object Object]';
 
@@ -22,8 +26,12 @@ function resso<T extends Store>(store: T): T {
 
     const Render = () => {
       const [value, setValue] = useState(store[key]);
-      useMemo(() => listeners.add(setValue), []);
-      useEffect(() => () => listeners.delete(setValue) as unknown as void, []);
+      useIsomorphicLayoutEffect(() => {
+        listeners.add(setValue);
+        return () => {
+          listeners.delete(setValue);
+        };
+      }, []);
       return value;
     };
 
@@ -44,8 +52,7 @@ function resso<T extends Store>(store: T): T {
           store[key] = val;
           setter[key].forEach((setValue) => setValue(val));
         };
-        /* istanbul ignore next */
-        typeof batch === 'function' ? batch(updater) : updater();
+        typeof batch === 'function' ? batch(updater) : /* c8 ignore next */ updater();
       }
       return true;
     },
