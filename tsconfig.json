@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "target": "es5",
     "module": "esnext",
     "moduleResolution": "node",
@@ -9,6 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
 
     "strict": true,
     "noImplicitAny": true,
@@ -24,5 +26,5 @@
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/*.ts"]
+  "exclude": ["node_modules", "dist", "coverage"]
 }
