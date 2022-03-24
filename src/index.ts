@@ -8,7 +8,7 @@ type Setter<T> = { [key in keyof T]: Set<Dispatch<SetStateAction<T[keyof T]>>> }
 
 const isSSR = typeof window === 'undefined';
 const useIsomorphicLayoutEffect = isSSR ? useEffect : /* c8 ignore next */ useLayoutEffect;
-const batch = ReactDOM.unstable_batchedUpdates;
+const batch = ReactDOM.unstable_batchedUpdates || /* c8 ignore next */ ((fn: () => void) => fn());
 const __DEV__ = process.env.NODE_ENV !== 'production';
 const notObj = (val: any) => Object.prototype.toString.call(val) !== '[object Object]';
 
@@ -48,11 +48,10 @@ function resso<T extends Store>(store: T): T {
     },
     set(_, key: keyof T, val: T[keyof T]) {
       if (val !== store[key]) {
-        const updater = () => {
+        batch(() => {
           store[key] = val;
           setter[key].forEach((setValue) => setValue(val));
-        };
-        typeof batch === 'function' ? batch(updater) : /* c8 ignore next */ updater();
+        });
       }
       return true;
     },
