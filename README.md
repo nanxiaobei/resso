@@ -18,6 +18,10 @@ English · [简体中文](./README.zh-CN.md)
 
 ---
 
+## Introduction
+
+[resso, world’s simplest React state manager →](https://nanxiaobei.medium.com/resso-worlds-simplest-react-state-manager-a3b1b0ccaa99)
+
 ## Install
 
 ```sh

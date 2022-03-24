@@ -18,6 +18,10 @@
 
 ---
 
+## 介绍
+
+[resso，世界上最简单的 React 状态管理器 →](https://zhuanlan.zhihu.com/p/468417292)
+
 ## 安装
 
 ```sh
