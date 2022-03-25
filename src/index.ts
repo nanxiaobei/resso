@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction } from 'react';
 
 type Store = Record<string, any>;
 type State<T> = { [K in keyof T]: () => T[K] };
-type Setter<T> = { [key in keyof T]: Set<Dispatch<SetStateAction<T[keyof T]>>> };
+type Setter<T> = { [K in keyof T]: Set<Dispatch<SetStateAction<T[K]>>> };
 
 const isSSR = typeof window === 'undefined';
 const useIsomorphicLayoutEffect = isSSR ? useEffect : /* c8 ignore next */ useLayoutEffect;
