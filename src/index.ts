@@ -1,19 +1,18 @@
 import ReactDOM from 'react-dom';
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
-import type { Dispatch, SetStateAction } from 'react';
 
+type Callback = () => void;
 type State = Record<string, any>;
-type Setter<T> = Dispatch<SetStateAction<T[keyof T]>>;
 type Store<T> = {
   [K in keyof T]: {
-    subscribe: (listener: Setter<T>) => () => void;
+    subscribe: (listener: Callback) => Callback;
     getSnapshot: () => T[K];
     useSnapshot: () => T[K];
     setSnapshot: (val: T[K]) => void;
   };
 };
 
-const run = (fn: () => void) => fn();
+const run = (fn: Callback) => fn();
 const batch = ReactDOM.unstable_batchedUpdates || /* c8 ignore next */ run;
 const __DEV__ = process.env.NODE_ENV !== 'production';
 const obj = (x: any) => Object.prototype.toString.call(x) === '[object Object]';
@@ -26,7 +25,7 @@ function resso<T extends State>(state: T): T {
   Object.keys(state).forEach((key: keyof T) => {
     if (typeof state[key] === 'function') return;
 
-    const listeners: Set<Setter<T>> = new Set();
+    const listeners = new Set<Callback>();
 
     store[key] = {
       subscribe: (listener) => {
@@ -37,7 +36,7 @@ function resso<T extends State>(state: T): T {
       setSnapshot: (val) => {
         if (val === state[key]) return;
         state[key] = val;
-        batch(() => listeners.forEach((listener) => listener(val)));
+        batch(() => listeners.forEach((listener) => listener()));
       },
       useSnapshot: () => {
         return useSyncExternalStore(
