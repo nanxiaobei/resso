@@ -1,11 +1,11 @@
 import React from 'react';
 import { it, expect } from 'vitest';
-import { configure, mount } from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import 'jsdom-global/register';
+import { render, fireEvent, screen } from '@testing-library/react';
 import resso from './index';
 
-configure({ adapter: new Adapter() });
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 it('resso', () => {
   const store = resso({
@@ -18,23 +18,21 @@ it('resso', () => {
     return (
       <>
         <p>{count}</p>
-        <button id="add1" onClick={inc} />
-        <button id="add2" onClick={() => store.count++} />
-        <button id="add3" onClick={() => (store.count = +count)} />
+        <button onClick={inc}>add1</button>
+        <button onClick={() => store.count++}>add2</button>
+        <button onClick={() => (store.count = +count)}>add3</button>
       </>
     );
   };
 
-  const wrapper = mount(<App />);
+  render(<App />);
   const error = (fn: () => void) => expect(fn).toThrow();
-  const click = (btn: string) => wrapper.find(btn).simulate('click');
+  const click = (btn: string) => fireEvent.click(screen.getByText(btn));
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   error(() => resso());
-  click('#add1');
-  click('#add2');
-  click('#add3');
-
-  wrapper.unmount();
+  click('add1');
+  click('add2');
+  click('add3');
 });
