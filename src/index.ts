@@ -1,58 +1,63 @@
-import { useState, useEffect, useLayoutEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { useSyncExternalStore } from 'use-sync-external-store/shim';
 import type { Dispatch, SetStateAction } from 'react';
 
-type Store = Record<string, any>;
-type State<T> = { [K in keyof T]: () => T[K] };
-type Setter<T> = { [K in keyof T]: Set<Dispatch<SetStateAction<T[K]>>> };
+type State = Record<string, any>;
+type Setter<T> = Dispatch<SetStateAction<T[keyof T]>>;
+type Store<T> = {
+  [K in keyof T]: {
+    subscribe: (listener: Setter<T>) => () => void;
+    getSnapshot: () => T[K];
+    useSnapshot: () => T[K];
+    setSnapshot: (val: T[K]) => void;
+  };
+};
 
-const isSSR = typeof window === 'undefined';
-const useIsomorphicLayoutEffect = isSSR ? useEffect : /* c8 ignore next */ useLayoutEffect;
-const batch = ReactDOM.unstable_batchedUpdates || /* c8 ignore next */ ((fn: () => void) => fn());
+const run = (fn: () => void) => fn();
+const batch = ReactDOM.unstable_batchedUpdates || /* c8 ignore next */ run;
 const __DEV__ = process.env.NODE_ENV !== 'production';
-const notObj = (val: any) => Object.prototype.toString.call(val) !== '[object Object]';
+const obj = (x: any) => Object.prototype.toString.call(x) === '[object Object]';
 
-function resso<T extends Store>(store: T): T {
-  if (__DEV__ && notObj(store)) throw new Error('store should be an object');
+function resso<T extends State>(state: T): T {
+  if (__DEV__ && !obj(state)) throw new Error('object required');
 
-  const state: State<T> = {} as State<T>;
-  const setter: Setter<T> = {} as Setter<T>;
+  const store: Store<T> = {} as Store<T>;
 
-  Object.keys(store).forEach((key: keyof T) => {
-    if (typeof store[key] === 'function') return;
+  Object.keys(state).forEach((key: keyof T) => {
+    if (typeof state[key] === 'function') return;
 
-    const listeners: Set<Dispatch<SetStateAction<T[keyof T]>>> = new Set();
-    setter[key] = listeners;
+    const listeners: Set<Setter<T>> = new Set();
 
-    const Render = () => {
-      const [value, setValue] = useState(store[key]);
-      useIsomorphicLayoutEffect(() => {
-        listeners.add(setValue);
-        return () => {
-          listeners.delete(setValue);
-        };
-      }, []);
-      return value;
+    store[key] = {
+      subscribe: (listener) => {
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+      getSnapshot: () => state[key],
+      setSnapshot: (val) => {
+        if (val === state[key]) return;
+        state[key] = val;
+        batch(() => listeners.forEach((listener) => listener(val)));
+      },
+      useSnapshot: () => {
+        return useSyncExternalStore(
+          store[key].subscribe,
+          store[key].getSnapshot
+        );
+      },
     };
-
-    state[key] = Render;
   });
 
-  return new Proxy(store, {
-    get(_, key: keyof T) {
+  return new Proxy(state, {
+    get: (_, key: keyof T) => {
       try {
-        return state[key]();
+        return store[key].useSnapshot();
       } catch (e) {
-        return store[key];
+        return state[key];
       }
     },
-    set(_, key: keyof T, val: T[keyof T]) {
-      if (val !== store[key]) {
-        batch(() => {
-          store[key] = val;
-          setter[key].forEach((setValue) => setValue(val));
-        });
-      }
+    set: (_, key: keyof T, val: T[keyof T]) => {
+      store[key].setSnapshot(val);
       return true;
     },
   } as ProxyHandler<T>);
