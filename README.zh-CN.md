@@ -5,7 +5,7 @@
 
 (现已支持 React 18)
 
-**Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render，0.47kb
+**Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
