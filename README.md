@@ -66,6 +66,11 @@ function App() {
   // top level in a component (Hooks rules), then use, or may get React warning
   const { count, inc } = store;
 }
+
+// For `react<=17`, you can use `resso.config()` to pass
+// `ReactDOM.unstable_batchedUpdates` for batch updating in async updates.
+//
+// resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ```
 
 ## Re-render

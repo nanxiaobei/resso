@@ -66,6 +66,11 @@ function App() {
   // 在组件最顶层（Hooks 规则），再使用，否则将有 React 报错
   const { count, inc } = store;
 }
+
+// 对于 `react<=17`，可以使用 `resso.config()` 传入
+// `ReactDOM.unstable_batchedUpdates` 用于异步更新的批量更新。
+//
+// resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在 app 入口处
 ```
 
 ## Re-render
