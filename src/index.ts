@@ -1,8 +1,7 @@
-import ReactDOM from 'react-dom';
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
 type Callback = () => void;
-type State = Record<string, any>;
+type State = Record<string, unknown>;
 type Store<T> = {
   [K in keyof T]: {
     subscribe: (listener: Callback) => Callback;
@@ -12,13 +11,15 @@ type Store<T> = {
   };
 };
 
-const run = (fn: Callback) => fn();
-const batch = ReactDOM.unstable_batchedUpdates || /* c8 ignore next */ run;
+let run = (fn: Callback) => {
+  fn();
+};
 const __DEV__ = process.env.NODE_ENV !== 'production';
-const obj = (x: any) => Object.prototype.toString.call(x) === '[object Object]';
 
-function resso<T extends State>(state: T): T {
-  if (__DEV__ && !obj(state)) throw new Error('object required');
+const resso = <T extends State>(state: T): T => {
+  if (__DEV__ && Object.prototype.toString.call(state) !== '[object Object]') {
+    throw new Error('object required');
+  }
 
   const store: Store<T> = {} as Store<T>;
 
@@ -36,7 +37,7 @@ function resso<T extends State>(state: T): T {
       setSnapshot: (val) => {
         if (val === state[key]) return;
         state[key] = val;
-        batch(() => listeners.forEach((listener) => listener()));
+        run(() => listeners.forEach((listener) => listener()));
       },
       useSnapshot: () => {
         return useSyncExternalStore(
@@ -60,6 +61,10 @@ function resso<T extends State>(state: T): T {
       return true;
     },
   } as ProxyHandler<T>);
-}
+};
+
+resso.config = ({ batch }: { batch: typeof run }) => {
+  run = batch;
+};
 
 export default resso;
