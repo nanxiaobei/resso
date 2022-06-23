@@ -1,13 +1,9 @@
 import React from 'react';
-import { it, expect } from 'vitest';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { test, expect } from 'vitest';
+import { render, fireEvent } from '@testing-library/react';
 import resso from './index';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
-
-it('resso', () => {
+test('resso', () => {
   const store = resso({
     count: 0,
     inc: () => store.count++,
@@ -18,21 +14,25 @@ it('resso', () => {
     return (
       <>
         <p>{count}</p>
-        <button onClick={inc}>add1</button>
-        <button onClick={() => store.count++}>add2</button>
-        <button onClick={() => (store.count = +count)}>add3</button>
+        <button onClick={inc}>btn1</button>
+        <button onClick={() => store.count++}>btn2</button>
+        <button onClick={() => (store.count = count)}>btn3</button>
       </>
     );
   };
 
-  render(<App />);
-  const error = (fn: () => void) => expect(fn).toThrow();
-  const click = (btn: string) => fireEvent.click(screen.getByText(btn));
+  const { getByText } = render(<App />);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  error(() => resso());
-  click('add1');
-  click('add2');
-  click('add3');
+  expect(() => resso()).toThrow();
+
+  fireEvent.click(getByText('btn1'));
+  expect(getByText('1')).toBeInTheDocument();
+
+  fireEvent.click(getByText('btn2'));
+  expect(getByText('2')).toBeInTheDocument();
+
+  fireEvent.click(getByText('btn3'));
+  expect(getByText('2')).toBeInTheDocument();
 });
