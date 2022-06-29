@@ -46,7 +46,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // 在顶部先解构 🥷
+  const { count } = store; // 在顶层先解构 🥷
   return (
     <>
       {count}
