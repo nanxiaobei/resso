@@ -3,7 +3,7 @@
 
 世界上最简单的 React 状态管理器
 
-(现已支持 React 18)
+(支持 React 18、React Native、SSR、小程序等)
 
 **Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render
 

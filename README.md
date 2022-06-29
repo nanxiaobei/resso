@@ -3,7 +3,7 @@
 
 World's Simplest React State Manager
 
-(Now Support React 18)
+(Support React 18, React Native, SSR, Mini Apps)
 
 **Re**active **s**hared **s**tore **o**f React. No extra re-render
 
