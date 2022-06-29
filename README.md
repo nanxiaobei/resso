@@ -24,6 +24,12 @@ English · [简体中文](./README.zh-CN.md)
 
 [resso, world’s simplest React state manager →](https://nanxiaobei.medium.com/resso-worlds-simplest-react-state-manager-a3b1b0ccaa99)
 
+## Features
+
+- Extremely simple 🪩
+- Extremely smart 🫙
+- Extremely small 🫧
+
 ## Install
 
 ```sh
@@ -40,7 +46,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // destructure first, then use
+  const { count } = store; // destructure at top first 🥷
   return (
     <>
       {count}
@@ -61,9 +67,9 @@ import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
 
+// store data are injected by useState, so please ensure to destructure first,
+// top level in a component (Hooks rules), then use, or may get React warning
 function App() {
-  // store data are injected by useState, so please ensure to destructure first,
-  // top level in a component (Hooks rules), then use, or may get React warning
   const { count, inc } = store;
 }
 

@@ -24,6 +24,12 @@
 
 [resso，世界上最简单的 React 状态管理器 →](https://zhuanlan.zhihu.com/p/468417292)
 
+## 特性
+
+- 非常简单 🪩
+- 非常聪明 🫙
+- 非常小巧 🫧
+
 ## 安装
 
 ```sh
@@ -40,7 +46,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // 先解构，再使用
+  const { count } = store; // 在顶部先解构 🥷
   return (
     <>
       {count}
@@ -61,9 +67,9 @@ import resso from 'resso';
 
 const store = resso({ count: 0, inc: () => store.count++ });
 
+// store 数据是以 useState 注入组件，所以请确保在组件
+// 最顶层（Hooks 规则）先解构再使用，否则将有 React 报错
 function App() {
-  // store 数据是以 useState 注入组件，所以请确保先解构，
-  // 在组件最顶层（Hooks 规则），再使用，否则将有 React 报错
   const { count, inc } = store;
 }
 
