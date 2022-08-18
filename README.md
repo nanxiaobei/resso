@@ -3,9 +3,9 @@
 
 World's Simplest React State Manager
 
-(Support React 18, React Native, SSR, Mini Apps)
+(React 18, React Native, SSR, Mini Apps)
 
-**Re**active **s**hared **s**tore **o**f React. No extra re-render
+**Re**active **s**hared **s**tore **o**f React. No more extra re-render
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
@@ -69,13 +69,11 @@ const store = resso({ count: 0, inc: () => store.count++ });
 
 // store data are injected by useState, so please ensure to destructure first,
 // top level in a component (Hooks rules), then use, or may get React warning
-function App() {
-  const { count, inc } = store;
-}
 
-// For `react<=17`, you can use `resso.config()` to pass
-// `ReactDOM.unstable_batchedUpdates` for batch updating in async updates.
-//
+const { count, inc } = store;
+// other component code below ...
+
+// For `react<=17`, use batch updating in async updates:
 // resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ```
 

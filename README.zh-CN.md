@@ -3,7 +3,7 @@
 
 世界上最简单的 React 状态管理器
 
-(支持 React 18、React Native、SSR、小程序等)
+(React 18、React Native、SSR、小程序等)
 
 **Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render
 
@@ -69,13 +69,11 @@ const store = resso({ count: 0, inc: () => store.count++ });
 
 // store 数据是以 useState 注入组件，所以请确保在组件
 // 最顶层（Hooks 规则）先解构再使用，否则将有 React 报错
-function App() {
-  const { count, inc } = store;
-}
 
-// 对于 `react<=17`，可以使用 `resso.config()` 传入
-// `ReactDOM.unstable_batchedUpdates` 用于异步更新的批量更新。
-//
+const { count, inc } = store;
+// 其它组件代码写在下面 ...
+
+// 对于 `react<=17`，实现异步更新的批量更新：
 // resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在 app 入口处
 ```
 
