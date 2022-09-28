@@ -14,6 +14,7 @@ type Store<T> = {
 let run = (fn: Callback) => {
   fn();
 };
+
 const __DEV__ = process.env.NODE_ENV !== 'production';
 
 const resso = <T extends State>(state: T): T => {
