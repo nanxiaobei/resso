@@ -69,7 +69,7 @@ const store = resso({ count: 0, inc: () => store.count++ });
 
 // store 数据是以 useState 注入组件，所以请确保在组件
 // 最顶层（Hooks 规则）先解构再使用，否则将有 React 报错
-
+// ↓↓
 const { count, inc } = store;
 // 其它组件代码写在下面 ...
 
