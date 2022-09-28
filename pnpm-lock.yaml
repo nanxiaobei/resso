@@ -6,11 +6,12 @@ specifiers:
   '@testing-library/react': ^13.4.0
   '@types/node': ^18.7.23
   '@types/react': ^18.0.21
+  '@types/react-dom': ^18.0.6
   '@types/testing-library__jest-dom': ^5.14.5
   '@types/use-sync-external-store': ^0.0.3
   '@typescript-eslint/eslint-plugin': ^5.38.1
   '@typescript-eslint/parser': ^5.38.1
-  c8: ^7.12.0
+  '@vitest/coverage-c8': ^0.23.4
   eslint: ^8.24.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-import: ^2.26.0
@@ -18,6 +19,7 @@ specifiers:
   jsdom: ^20.0.0
   prettier: ^2.7.1
   react: ^18.2.0
+  react-dom: ^18.2.0
   rollup: ^2.79.1
   rollup-plugin-dts: ^4.2.2
   tslib: ^2.4.0
@@ -31,14 +33,15 @@ dependencies:
 devDependencies:
   '@rollup/plugin-typescript': 8.5.0_hafrwlgfjmvsm7253l3bfjzhnq
   '@testing-library/jest-dom': 5.16.5
-  '@testing-library/react': 13.4.0_react@18.2.0
+  '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
   '@types/node': 18.7.23
   '@types/react': 18.0.21
+  '@types/react-dom': 18.0.6
   '@types/testing-library__jest-dom': 5.14.5
   '@types/use-sync-external-store': 0.0.3
   '@typescript-eslint/eslint-plugin': 5.38.1_c7qepppml3d4ahu5cnfwqe6ltq
   '@typescript-eslint/parser': 5.38.1_ypn2ylkkyfa5i233caldtndbqa
-  c8: 7.12.0
+  '@vitest/coverage-c8': 0.23.4_jsdom@20.0.0
   eslint: 8.24.0
   eslint-config-prettier: 8.5.0_eslint@8.24.0
   eslint-plugin-import: 2.26.0_gofx6msuqd4luqedfouzks2s4u
@@ -46,6 +49,7 @@ devDependencies:
   jsdom: 20.0.0
   prettier: 2.7.1
   react: 18.2.0
+  react-dom: 18.2.0_react@18.2.0
   rollup: 2.79.1
   rollup-plugin-dts: 4.2.2_gypgyaqhine6mwjfvh7icfhviq
   tslib: 2.4.0
@@ -280,7 +284,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react/13.4.0_react@18.2.0:
+  /@testing-library/react/13.4.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-sXOGON+WNTh3MLE9rve97ftaZukN3oNf2KjDy7YTx6hcTO2uuLHuCGynMDhFwGw/jYf4OJ2Qk0i4i79qMNNkyw==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -291,6 +295,7 @@ packages:
       '@testing-library/dom': 8.18.1
       '@types/react-dom': 18.0.6
       react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: true
 
   /@tootallnate/once/2.0.0:
@@ -521,6 +526,24 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.38.1
       eslint-visitor-keys: 3.3.0
+    dev: true
+
+  /@vitest/coverage-c8/0.23.4_jsdom@20.0.0:
+    resolution: {integrity: sha512-jmD00a5DQH9gu9K+YdvVhcMuv2CzHvU4gCnySS40Ec5hKlXtlCzRfNHl00VnhfuBeaQUmaQYe60BLT413HyDdg==}
+    dependencies:
+      c8: 7.12.0
+      vitest: 0.23.4_jsdom@20.0.0
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - happy-dom
+      - jsdom
+      - less
+      - sass
+      - stylus
+      - supports-color
+      - terser
     dev: true
 
   /abab/2.0.6:
@@ -2339,6 +2362,16 @@ packages:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
 
+  /react-dom/18.2.0_react@18.2.0:
+    resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
+    peerDependencies:
+      react: ^18.2.0
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.2.0
+      scheduler: 0.23.0
+    dev: true
+
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
     dev: true
@@ -2471,6 +2504,12 @@ packages:
     engines: {node: '>=v12.22.7'}
     dependencies:
       xmlchars: 2.2.0
+    dev: true
+
+  /scheduler/0.23.0:
+    resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
+    dependencies:
+      loose-envify: 1.4.0
     dev: true
 
   /semver/6.3.0:

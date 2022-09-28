@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { test, expect } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
 import resso from './index';
@@ -35,4 +36,8 @@ test('resso', () => {
 
   fireEvent.click(getByText('btn3'));
   expect(getByText('2')).toBeInTheDocument();
+});
+
+test('resso.config', () => {
+  resso.config({ batch: ReactDOM.unstable_batchedUpdates });
 });
