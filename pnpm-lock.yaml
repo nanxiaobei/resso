@@ -169,7 +169,7 @@ packages:
     resolution: {integrity: sha512-3Ab5HgYIIAnS0HjqJHQYZS+zXc4tUmTmBH3z83ajI6afXp8X3ZtdLX+nXx+I7LNkJD7uN9LAVhgnjDgZa2z0kA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@sinclair/typebox': 0.24.43
+      '@sinclair/typebox': 0.24.44
     dev: true
 
   /@jest/types/29.1.0:
@@ -251,8 +251,8 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /@sinclair/typebox/0.24.43:
-    resolution: {integrity: sha512-1orQTvtazZmsPeBroJjysvsOQCYV2yjWlebkSY38pl5vr2tdLjEJ+LoxITlGNZaH2RE19WlAwQMkH/7C14wLfw==}
+  /@sinclair/typebox/0.24.44:
+    resolution: {integrity: sha512-ka0W0KN5i6LfrSocduwliMMpqVgohtPFidKdMEOUjoOFCHcOOYkKsPRxfs5f15oPNHTm6ERAm0GV/+/LTKeiWg==}
     dev: true
 
   /@testing-library/dom/8.18.1:
