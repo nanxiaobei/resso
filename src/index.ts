@@ -24,7 +24,9 @@ const resso = <T extends State>(state: T): T => {
   const store: Store<T> = {} as Store<T>;
 
   Object.keys(state).forEach((key: keyof T) => {
-    if (typeof state[key] === 'function') return;
+    if (typeof state[key] === 'function') {
+      return;
+    }
 
     const listeners = new Set<Callback>();
 
@@ -35,9 +37,10 @@ const resso = <T extends State>(state: T): T => {
       },
       getSnapshot: () => state[key],
       setSnapshot: (val) => {
-        if (val === state[key]) return;
-        state[key] = val;
-        run(() => listeners.forEach((listener) => listener()));
+        if (val !== state[key]) {
+          state[key] = val;
+          run(() => listeners.forEach((listener) => listener()));
+        }
       },
       useSnapshot: () => {
         return useSyncExternalStore(
