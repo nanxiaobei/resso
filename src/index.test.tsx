@@ -7,7 +7,10 @@ import resso from './index';
 test('resso', () => {
   const store = resso({
     count: 0,
-    inc: () => store.count++,
+    inc: () => {
+      store.count++;
+      store.inc = () => -1;
+    },
   });
 
   const App = () => {
