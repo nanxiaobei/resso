@@ -69,9 +69,10 @@ const store = resso({ count: 0, inc: () => store.count++ });
 
 // store data are injected by useState, so please ensure to destructure first,
 // top level in a component (Hooks rules), then use, or may get React warning
-// ↓↓
-const { count, inc } = store;
-// other component code below ...
+function App() {
+  const { count, inc } = store;
+  // other component code below ...
+}
 
 // For `react<=17`, use batch updating in async updates:
 // resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
