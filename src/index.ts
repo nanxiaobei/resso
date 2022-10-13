@@ -14,7 +14,7 @@ type State<T> = {
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
 
-let isInMethod = false;
+let isInFunction = false;
 let run = (fn: Callback) => {
   fn();
 };
@@ -27,53 +27,58 @@ const resso = <T extends Store>(store: T): T => {
   const state: State<T> = {} as State<T>;
 
   Object.keys(store).forEach((key: keyof T) => {
-    if (typeof store[key] !== 'function') {
-      const listeners = new Set<Callback>();
-
-      state[key] = {
-        subscribe: (listener) => {
-          listeners.add(listener);
-          return () => listeners.delete(listener);
-        },
-        getSnapshot: () => store[key],
-        setSnapshot: (val) => {
-          if (val !== store[key]) {
-            store[key] = val;
-            run(() => listeners.forEach((listener) => listener()));
-          }
-        },
-        useSnapshot: () => {
-          return useSyncExternalStore(
-            state[key].subscribe,
-            state[key].getSnapshot
-          );
-        },
-      };
+    if (typeof store[key] === 'function') {
+      return;
     }
+
+    const listeners = new Set<Callback>();
+    state[key] = {
+      subscribe: (listener) => {
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+      getSnapshot: () => store[key],
+      setSnapshot: (val) => {
+        if (val !== store[key]) {
+          store[key] = val;
+          run(() => listeners.forEach((listener) => listener()));
+        }
+      },
+      useSnapshot: () => {
+        return useSyncExternalStore(
+          state[key].subscribe,
+          state[key].getSnapshot
+        );
+      },
+    };
   });
 
   return new Proxy(store, {
     get: (_, key: keyof T) => {
-      if (!(key in state)) {
+      if (typeof store[key] === 'function') {
         return (...args: unknown[]) => {
-          isInMethod = true;
+          isInFunction = true;
           const res = (store[key] as Method)(...args);
-          isInMethod = false;
+          isInFunction = false;
           return res;
         };
       }
 
-      if (isInMethod) {
+      if (isInFunction) {
         return store[key];
       }
 
       try {
         return state[key].useSnapshot();
-      } catch (e) {
+      } catch (err) {
         return store[key];
       }
     },
     set: (_, key: keyof T, val: T[keyof T]) => {
+      if (typeof store[key] === 'function') {
+        return true;
+      }
+
       state[key].setSnapshot(val);
       return true;
     },
