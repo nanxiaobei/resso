@@ -75,9 +75,16 @@ const resso = <T extends Store>(store: T): T => {
       }
     },
     set: (_, key: keyof T, val: T[keyof T]) => {
-      if (key in store && typeof store[key] !== 'function') {
-        state[key].setSnapshot(val);
+      if (key in store) {
+        if (typeof store[key] !== 'function') {
+          state[key].setSnapshot(val);
+        } else if (__DEV__) {
+          throw new Error(`${key as string} is a function, can not update`);
+        }
+      } else if (__DEV__) {
+        throw new Error(`${key as string} is not initialized in store`);
       }
+
       return true;
     },
   } as ProxyHandler<T>);
