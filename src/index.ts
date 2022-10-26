@@ -75,11 +75,9 @@ const resso = <T extends Store>(store: T): T => {
       }
     },
     set: (_, key: keyof T, val: T[keyof T]) => {
-      if (typeof store[key] === 'function') {
-        return true;
+      if (key in store && typeof store[key] !== 'function') {
+        state[key].setSnapshot(val);
       }
-
-      state[key].setSnapshot(val);
       return true;
     },
   } as ProxyHandler<T>);
