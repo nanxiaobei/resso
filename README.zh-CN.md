@@ -65,7 +65,13 @@ function App() {
 ```js
 import resso from 'resso';
 
-const store = resso({ count: 0, inc: () => store.count++ });
+const store = resso({
+  count: 0,
+  inc: () => {
+    // 如果函数是异步的，请确保在 `await` 之前获取状态（`then` 之外）
+    store.count++;
+  },
+});
 
 // store 数据是以 useState 注入组件，所以请确保在组件
 // 最顶层（Hooks 规则）先解构再使用，否则将有 React 报错
