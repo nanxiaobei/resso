@@ -1,8 +1,9 @@
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
-type Callback = () => void;
-type Method = (...args: unknown[]) => unknown;
 type Store = Record<string, unknown>;
+type Action = (...args: unknown[]) => unknown;
+type Actions<T> = Record<keyof T, Action>;
+type Callback = () => void;
 type State<T> = {
   [K in keyof T]: {
     subscribe: (listener: Callback) => Callback;
@@ -14,7 +15,7 @@ type State<T> = {
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
 
-let isInFunction = false;
+let isInAction = false;
 let run = (fn: Callback) => {
   fn();
 };
@@ -25,9 +26,17 @@ const resso = <T extends Store>(store: T): T => {
   }
 
   const state: State<T> = {} as State<T>;
+  const actions: Actions<T> = {} as Actions<T>;
 
   Object.keys(store).forEach((key: keyof T) => {
     if (typeof store[key] === 'function') {
+      const rawAction = store[key];
+      actions[key] = (...args: unknown[]) => {
+        isInAction = true;
+        const res = (rawAction as Action)(...args);
+        isInAction = false;
+        return res;
+      };
       return;
     }
 
@@ -55,16 +64,11 @@ const resso = <T extends Store>(store: T): T => {
 
   return new Proxy(store, {
     get: (_, key: keyof T) => {
-      if (typeof store[key] === 'function') {
-        return (...args: unknown[]) => {
-          isInFunction = true;
-          const res = (store[key] as Method)(...args);
-          isInFunction = false;
-          return res;
-        };
+      if (key in actions) {
+        return actions[key];
       }
 
-      if (isInFunction) {
+      if (isInAction) {
         return store[key];
       }
 
@@ -76,13 +80,13 @@ const resso = <T extends Store>(store: T): T => {
     },
     set: (_, key: keyof T, val: T[keyof T]) => {
       if (key in store) {
-        if (typeof store[key] !== 'function') {
+        if (key in state) {
           state[key].setSnapshot(val);
         } else if (__DEV__) {
-          throw new Error(`${key as string} is a function, can not update`);
+          throw new Error(`'${key as string}' is a function, can not update`);
         }
       } else if (__DEV__) {
-        throw new Error(`${key as string} is not initialized in store`);
+        throw new Error(`'${key as string}' is not initialized in store`);
       }
 
       return true;
