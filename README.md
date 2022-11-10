@@ -68,8 +68,7 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   incAsync: async () => {
-    const { count } = store; // if need to get state in async functions, please at top
-    // `await` or `then()` below ...
+    const { count } = store; // to get state in async, please at top, before `await` or `then()`
 
     store.count = 1; // directly assign
     store('count', (prev) => prev + 1); // or use updater funtion

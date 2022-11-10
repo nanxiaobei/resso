@@ -68,8 +68,7 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   incAsync: async () => {
-    const { count } = store; // 如需在异步函数中获取 state，请确保在最前面
-    // `await` 或 `then()` 写在下面 ...
+    const { count } = store; // 异步函数中获取 state，请在最上面，在 `await` 或 `then()` 之前
 
     store.count = 1; // 直接赋值
     store('count', (prev) => prev + 1); // 或使用更新函数
