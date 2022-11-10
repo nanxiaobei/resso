@@ -67,16 +67,19 @@ import resso from 'resso';
 
 const store = resso({
   count: 0,
-  inc: () => {
-    // 如果函数是异步的，请确保在 `await` 之前获取状态（`then` 之外）
-    store.count++;
+  incAsync: async () => {
+    const { count } = store; // 如需在异步函数中获取 state，请确保在最前面
+    // `await` 或 `then()` 写在下面 ...
+
+    store.count = 1; // 直接赋值
+    store('count', (prev) => prev + 1); // 或使用更新函数
   },
 });
 
 // store 数据是以 useState 注入组件，所以请确保在组件
 // 最顶层（Hooks 规则）先解构再使用，否则将有 React 报错
 function App() {
-  const { count, inc } = store;
+  const { count, incAsync } = store;
   // 其它组件代码写在下面 ...
 }
 

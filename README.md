@@ -67,16 +67,19 @@ import resso from 'resso';
 
 const store = resso({
   count: 0,
-  inc: () => {
-    // if a function is async, please ensure to get state before `await` (outside of `then`)
-    store.count++;
+  incAsync: async () => {
+    const { count } = store; // if need to get state in async functions, please at top
+    // `await` or `then()` below ...
+
+    store.count = 1; // directly assign
+    store('count', (prev) => prev + 1); // or use updater funtion
   },
 });
 
 // store data are injected by useState, so please ensure to destructure first,
 // top level in a component (Hooks rules), then use, or may get React warning
 function App() {
-  const { count, inc } = store;
+  const { count, incAsync } = store;
   // other component code below ...
 }
 
