@@ -17,7 +17,7 @@ test('resso', () => {
         <p>{count}</p>
         <button onClick={inc}>btn1</button>
         <button onClick={() => store.count++}>btn2</button>
-        <button onClick={() => (store.count = count)}>btn3</button>
+        <button onClick={() => store('count', (prev) => prev + 1)}>btn3</button>
       </>
     );
   };
@@ -47,7 +47,7 @@ test('resso', () => {
   expect(getByText('2')).toBeInTheDocument();
 
   fireEvent.click(getByText('btn3'));
-  expect(getByText('2')).toBeInTheDocument();
+  expect(getByText('3')).toBeInTheDocument();
 });
 
 test('resso.config', () => {
