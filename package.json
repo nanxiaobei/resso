@@ -27,11 +27,12 @@
     "watch": "rollup -wc --configPlugin @rollup/plugin-typescript",
     "build": "rm -rf dist coverage && rollup -c --configPlugin @rollup/plugin-typescript"
   },
-  "dependencies": {
-    "use-sync-external-store": "^1.2.0"
-  },
   "peerDependencies": {
     "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "tslib": "^2.4.1",
+    "use-sync-external-store": "^1.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^9.0.2",
@@ -42,20 +43,17 @@
     "@types/react-dom": "^18.0.8",
     "@types/testing-library__jest-dom": "^5.14.5",
     "@types/use-sync-external-store": "^0.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@vitejs/plugin-react": "^2.2.0",
     "@vitest/coverage-c8": "^0.25.1",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-config-react-app": "^7.0.1",
     "jsdom": "^20.0.2",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.2.5",
     "rollup-plugin-dts": "^5.0.0",
-    "tslib": "^2.4.1",
     "typescript": "^4.8.4",
     "vitest": "^0.25.1"
   }
