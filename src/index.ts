@@ -4,7 +4,7 @@ type VoidFn = () => void;
 type AnyFn = (...args: unknown[]) => unknown;
 type Updater<V> = (val: V) => V;
 
-type Obj = Record<string, unknown>;
+type Data = Record<string, unknown>;
 type State<T> = {
   [K in keyof T]: {
     subscribe: (listener: VoidFn) => VoidFn;
@@ -13,33 +13,38 @@ type State<T> = {
     setSnapshot: (val: T[K]) => void;
   };
 };
-type Actions<T> = Record<keyof T, AnyFn>;
+type Methods<T> = Record<keyof T, AnyFn>;
 type Setter<T> = <K extends keyof T>(key: K, updater: Updater<T[K]>) => void;
 type Store<T> = T & Setter<T>;
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
+const __DEV_ERR__ = (msg: string) => {
+  if (__DEV__) {
+    throw new Error(msg);
+  }
+};
 
-let isInAction = false;
+let isInMethod = false;
 let run = (fn: VoidFn) => {
   fn();
 };
 
-const resso = <T extends Obj>(obj: T): Store<T> => {
-  if (__DEV__ && Object.prototype.toString.call(obj) !== '[object Object]') {
+const resso = <T extends Data>(data: T): Store<T> => {
+  if (__DEV__ && Object.prototype.toString.call(data) !== '[object Object]') {
     throw new Error('object required');
   }
 
   const state: State<T> = {} as State<T>;
-  const actions: Actions<T> = {} as Actions<T>;
+  const methods: Methods<T> = {} as Methods<T>;
 
-  Object.keys(obj).forEach((key: keyof T) => {
-    const initVal = obj[key];
+  Object.keys(data).forEach((key: keyof T) => {
+    const initVal = data[key];
 
     if (initVal instanceof Function) {
-      actions[key] = (...args: unknown[]) => {
-        isInAction = true;
+      methods[key] = (...args: unknown[]) => {
+        isInMethod = true;
         const res = initVal(...args);
-        isInAction = false;
+        isInMethod = false;
         return res;
       };
       return;
@@ -52,10 +57,10 @@ const resso = <T extends Obj>(obj: T): Store<T> => {
         listeners.add(listener);
         return () => listeners.delete(listener);
       },
-      getSnapshot: () => obj[key],
+      getSnapshot: () => data[key],
       setSnapshot: (val) => {
-        if (val !== obj[key]) {
-          obj[key] = val;
+        if (val !== data[key]) {
+          data[key] = val;
           run(() => listeners.forEach((listener) => listener()));
         }
       },
@@ -69,15 +74,15 @@ const resso = <T extends Obj>(obj: T): Store<T> => {
   });
 
   const setState = (key: keyof T, val: T[keyof T] | Updater<T[keyof T]>) => {
-    if (key in obj) {
+    if (key in data) {
       if (key in state) {
-        const newVal = val instanceof Function ? val(obj[key]) : val;
+        const newVal = val instanceof Function ? val(data[key]) : val;
         state[key].setSnapshot(newVal);
-      } else if (__DEV__) {
-        throw new Error(`'${key as string}' is a function, can not update`);
+      } else {
+        __DEV_ERR__(`\`${key as string}\` is a method, can not update`);
       }
-    } else if (__DEV__) {
-      throw new Error(`'${key as string}' is not initialized in store`);
+    } else {
+      __DEV_ERR__(`\`${key as string}\` is not initialized in store`);
     }
   };
 
@@ -85,18 +90,18 @@ const resso = <T extends Obj>(obj: T): Store<T> => {
     (() => undefined) as unknown as Store<T>,
     {
       get: (_, key: keyof T) => {
-        if (key in actions) {
-          return actions[key];
+        if (key in methods) {
+          return methods[key];
         }
 
-        if (isInAction) {
-          return obj[key];
+        if (isInMethod) {
+          return data[key];
         }
 
         try {
           return state[key].useSnapshot();
         } catch (err) {
-          return obj[key];
+          return data[key];
         }
       },
       set: (_, key: keyof T, val: T[keyof T]) => {
@@ -104,7 +109,11 @@ const resso = <T extends Obj>(obj: T): Store<T> => {
         return true;
       },
       apply: (_, __, [key, updater]: [keyof T, Updater<T[keyof T]>]) => {
-        setState(key, updater);
+        if (typeof updater === 'function') {
+          setState(key, updater);
+        } else {
+          __DEV_ERR__(`updater for \`${key as string}\` should be a function`);
+        }
       },
     } as ProxyHandler<Store<T>>
   );

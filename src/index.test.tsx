@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
-import { test, expect } from 'vitest';
-import { render, fireEvent } from '@testing-library/react';
+import { expect, test } from 'vitest';
 import '@testing-library/jest-dom';
+import { fireEvent, render } from '@testing-library/react';
 import resso from './index';
 
 test('resso', () => {
@@ -25,15 +25,18 @@ test('resso', () => {
   const { getByText } = render(<App />);
 
   expect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     resso();
   }).toThrow();
 
   expect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     store.a = 1;
+  }).toThrow();
+
+  expect(() => {
+    // @ts-ignore
+    store('count', 1);
   }).toThrow();
 
   expect(() => {
