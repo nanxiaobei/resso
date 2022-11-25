@@ -8,10 +8,9 @@ const input = 'src/index.ts';
 const cjsOutput = { file: pkg.main, format: 'cjs', exports: 'auto' };
 const esmOutput = { file: pkg.module, format: 'es' };
 const dtsOutput = { file: pkg.types, format: 'es' };
-const external = () => true;
 
 export default [
-  { input, output: cjsOutput, plugins: [typescript()], external },
-  { input, output: esmOutput, plugins: [typescript()], external },
+  { input, output: cjsOutput, plugins: [typescript()], external: () => true },
+  { input, output: esmOutput, plugins: [typescript()], external: () => true },
   { input, output: dtsOutput, plugins: [dts()] },
 ];
