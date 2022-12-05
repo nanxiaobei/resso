@@ -4,9 +4,10 @@ module.exports = {
   plugins: [require.resolve('@trivago/prettier-plugin-sort-imports')],
   importOrder: [
     '^react',
-    '^vitest',
-    '^@rollup',
+    '^vite',
+    '^@vite',
     '^rollup',
+    '^@rollup',
     '<THIRD_PARTY_MODULES>',
     '^[./]',
   ],
