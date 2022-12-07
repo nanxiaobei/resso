@@ -33,9 +33,11 @@ English · [简体中文](./README.zh-CN.md)
 ## Install
 
 ```sh
+pnpm add resso
+# or
 yarn add resso
-
-# npm i resso
+# or
+npm i resso
 ```
 
 ## Usage
@@ -56,8 +58,6 @@ function App() {
 }
 ```
 
-## Demo
-
 [![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
 
 ## API
@@ -67,26 +67,26 @@ import resso from 'resso';
 
 const store = resso({
   count: 0,
-  incAsync: async () => {
-    const { count } = store; // to get state in async, please at top, before `await` or `then()`
+  inc: async () => {
+    const { count } = store; // destructure at top first, also 🥷
 
-    store.count = 1; // directly assign
-    store('count', (prev) => prev + 1); // or use updater funtion
+    store.count = count + 1; // directly assign
+    store('count', (prev) => prev + 1); // or an updater funtion
   },
 });
 
 // store data are injected by useState, so please ensure to destructure first,
 // top level in a component (Hooks rules), then use, or may get React warning
 function App() {
-  const { count, incAsync } = store;
+  const { count, inc } = store;
   // other component code below ...
 }
 
-// For `react<=17`, use batch updating in async updates:
-// resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
+// For react<18, to use batch updating:
+resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ```
 
-## Re-render
+## Re-render on demand
 
 ```jsx
 const store = resso({

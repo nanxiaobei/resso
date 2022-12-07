@@ -33,9 +33,11 @@
 ## 安装
 
 ```sh
+pnpm add resso
+# or
 yarn add resso
-
-# npm i resso
+# or
+npm i resso
 ```
 
 ## 使用
@@ -56,8 +58,6 @@ function App() {
 }
 ```
 
-## 示例
-
 [![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
 
 ## API
@@ -67,26 +67,26 @@ import resso from 'resso';
 
 const store = resso({
   count: 0,
-  incAsync: async () => {
-    const { count } = store; // 异步函数中获取 state，请在最上面，在 `await` 或 `then()` 之前
+  inc: async () => {
+    const { count } = store; // 在顶层先解构，同样 🥷
 
-    store.count = 1; // 直接赋值
+    store.count = count + 1; // 直接赋值
     store('count', (prev) => prev + 1); // 或使用更新函数
   },
 });
 
-// store 数据是以 useState 注入组件，所以请确保在组件
-// 最顶层（Hooks 规则）先解构再使用，否则将有 React 报错
+// store 数据其实是以 useState 注入组件，所以请确保在组件
+// 最顶层 (Hooks rules) 先解构再使用，否则将有 React 报错
 function App() {
-  const { count, incAsync } = store;
+  const { count, inc } = store;
   // 其它组件代码写在下面 ...
 }
 
-// 对于 `react<=17`，实现异步更新的批量更新：
+// 对于 react<18，实现批量更新：
 // resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在 app 入口处
 ```
 
-## Re-render
+## 按需 re-render
 
 ```jsx
 const store = resso({
