@@ -3,9 +3,11 @@
 
 World's Simplest React State Manager
 
-(React 18, React Native, SSR, Mini Apps)
+---
 
-**Re**active **s**hared **s**tore **o**f React. No more extra re-render
+**Re**active **s**hared **s**tore **o**f React. Fully on-demand re-render
+
+(Support React 18, React Native, SSR, Mini Apps)
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)

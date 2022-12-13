@@ -3,9 +3,11 @@
 
 世界上最简单的 React 状态管理器
 
-(React 18、React Native、SSR、小程序等)
+---
 
-**Re**active **s**hared **s**tore **o**f React. 消灭额外 re-render
+**Re**active **s**hared **s**tore **o**f React. 完全按需 re-render
+
+(支持 React 18、React Native、SSR、小程序)
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nanxiaobei/resso/Test?style=flat-square)](https://github.com/nanxiaobei/resso/actions?query=workflow%3ATest)
