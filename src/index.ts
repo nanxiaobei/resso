@@ -67,6 +67,7 @@ const resso = <T extends Data>(data: T): Store<T> => {
       useSnapshot: () => {
         return useSyncExternalStore(
           state[key].subscribe,
+          state[key].getSnapshot,
           state[key].getSnapshot
         );
       },
