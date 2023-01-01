@@ -1,3 +1,7 @@
 node_modules
 coverage
 dist
+
+example
+index.html
+vite.config.ts
