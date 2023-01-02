@@ -127,6 +127,6 @@ function Control() {
 
 ## FUTAKE
 
-试试 [**FUTAKE**](https://sotake.com/f) 小程序，你的灵感相册。🌈
+试试 [**FUTAKE**](https://sotake.com/futake) 小程序，你的灵感相册。🌈
 
 ![](https://s3.bmp.ovh/imgs/2022/07/21/452dd47aeb790abd.png)
