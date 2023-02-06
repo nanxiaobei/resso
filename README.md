@@ -1,7 +1,7 @@
 <div align="center">
 <h1>🪢 resso</h1>
 
-World's Simplest React State Manager
+The Simplest React State Manager
 
 ---
 
