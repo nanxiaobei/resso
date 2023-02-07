@@ -1,5 +1,5 @@
 <div align="center">
-<h1>🪢 resso</h1>
+<h1>⚡️resso</h1>
 
 最简单的 React 状态管理器
 

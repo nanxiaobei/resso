@@ -1,5 +1,5 @@
 <div align="center">
-<h1>🪢 resso</h1>
+<h1>⚡️resso</h1>
 
 The Simplest React State Manager
 
