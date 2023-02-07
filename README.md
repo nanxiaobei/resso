@@ -5,7 +5,7 @@ The Simplest React State Manager
 
 ---
 
-**Re**active **s**hared **s**tore **o**f React. Fully on-demand re-render
+**Re**active **s**hared **s**tore **o**f React. Auto on-demand re-render
 
 (Support React 18, React Native, SSR, Mini Apps)
 
@@ -64,27 +64,45 @@ function App() {
 
 ## API
 
-```js
+### 1. Init
+
+```jsx
 import resso from 'resso';
 
 const store = resso({
   count: 0,
-  inc: async () => {
+  inc: () => {
     const { count } = store; // destructure at top first, also 🥷
-
-    store.count = count + 1; // directly assign
-    store('count', (prev) => prev + 1); // or an updater funtion
   },
 });
+```
 
-// store data are injected by useState, so please ensure to destructure first,
-// top level in a component (Hooks rules), then use, or may get React warning
+### 2. Update
+
+```jsx
+// single update - directly assign
+store.count = count + 1;
+
+// single update - updater funtion
+store('count', (prev) => prev + 1);
+
+// multiple updates
+Object.assign(store, { a, b, c });
+```
+
+### 3. Use
+
+```jsx
+// ensure to destructure at top first, since store data are injected by useState
 function App() {
-  const { count, inc } = store;
-  // other component code below ...
+  const { count, inc } = store; // must at top, or may get React warning
 }
+```
 
-// For react<18, to use batch updating:
+### 4. react<18 batch update
+
+```jsx
+// to use batch update when react<18:
 resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ```
 

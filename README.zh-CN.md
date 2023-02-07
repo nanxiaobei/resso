@@ -5,7 +5,7 @@
 
 ---
 
-**Re**active **s**hared **s**tore **o**f React. 完全按需 re-render
+**Re**active **s**hared **s**tore **o**f React. 自动按需 re-render
 
 (支持 React 18、React Native、SSR、小程序)
 
@@ -64,28 +64,46 @@ function App() {
 
 ## API
 
-```js
+### 1. 初始化
+
+```jsx
 import resso from 'resso';
 
 const store = resso({
   count: 0,
-  inc: async () => {
+  inc: () => {
     const { count } = store; // 在顶层先解构，同样 🥷
-
-    store.count = count + 1; // 直接赋值
-    store('count', (prev) => prev + 1); // 或使用更新函数
   },
 });
+```
 
-// store 数据其实是以 useState 注入组件，所以请确保在组件
-// 最顶层 (Hooks rules) 先解构再使用，否则将有 React 报错
+### 2. 更新
+
+```jsx
+// 更新单个 - 直接赋值
+store.count = count + 1;
+
+// 更新单个 - 更新函数
+store('count', (prev) => prev + 1);
+
+// 更新多个
+Object.assign(store, { a, b, c });
+```
+
+### 3. 使用
+
+```jsx
+// 确保在最顶层先解构，因为 store 数据是以 useState 注入的
 function App() {
-  const { count, inc } = store;
-  // 其它组件代码写在下面 ...
+  const { count, inc } = store; // 必须在最顶部，否则将有 React 报错
 }
+```
 
-// 对于 react<18，实现批量更新：
-// resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在 app 入口处
+### 4. react<18 批量更新
+
+```jsx
+// 在 react<18 时使用批量更新：
+resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在项目入口
 ```
 
 ## 按需 re-render
