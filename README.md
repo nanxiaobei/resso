@@ -50,7 +50,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // destructure at top first 🥷
+  const { count } = store; // must destructure at top first 🥷
   return (
     <>
       {count}
@@ -72,7 +72,7 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   inc: () => {
-    const { count } = store; // destructure at top first, also 🥷
+    const { count } = store; // must destructure at top first, also 🥷
   },
 });
 ```
@@ -93,7 +93,7 @@ Object.assign(store, { a, b, c });
 ### 3. Use
 
 ```jsx
-// ensure to destructure at top first, since store data are injected by useState
+// please ensure to destructure at top first, since data are injected by useState
 function App() {
   const { count, inc } = store; // must at top, or may get React warning
 }

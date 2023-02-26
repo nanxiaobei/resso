@@ -50,7 +50,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // 在顶层先解构 🥷
+  const { count } = store; // 必须在顶层先解构 🥷
   return (
     <>
       {count}
@@ -72,10 +72,12 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   inc: () => {
-    const { count } = store; // 在顶层先解构，同样 🥷
+    const { count } = store; // 必须在顶层先解构，同样 🥷
   },
 });
 ```
+
+需在我
 
 ### 2. 更新
 
@@ -93,7 +95,7 @@ Object.assign(store, { a, b, c });
 ### 3. 使用
 
 ```jsx
-// 确保在最顶层先解构，因为 store 数据是以 useState 注入的
+// 请确保在最顶层先解构，因为数据是以 useState 注入的
 function App() {
   const { count, inc } = store; // 必须在最顶部，否则将有 React 报错
 }
