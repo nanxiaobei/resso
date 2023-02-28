@@ -1,11 +1,13 @@
 <div align="center">
-<h1>⚡️resso</h1>
+<h1>〄 resso</h1>
 
 The Simplest React State Manager
 
+_Auto on-demand re-render ⚡️_
+
 ---
 
-**Re**active **s**hared **s**tore **o**f React. Auto on-demand re-render
+**R**eactive **E**legant **S**hared **S**tore **O**bject
 
 (Support React 18, React Native, SSR, Mini Apps)
 
@@ -64,7 +66,7 @@ function App() {
 
 ## API
 
-### 1. Init
+**Initialize**
 
 ```jsx
 import resso from 'resso';
@@ -77,29 +79,31 @@ const store = resso({
 });
 ```
 
-### 2. Update
+**Update**
 
 ```jsx
-// single update - directly assign
+// single update → directly assign
 store.count = count + 1;
 
-// single update - updater funtion
+// single update → updater funtion
 store('count', (prev) => prev + 1);
 
 // multiple updates
 Object.assign(store, { a, b, c });
 ```
 
-### 3. Use
+**Use**
 
 ```jsx
-// please ensure to destructure at top first, since data are injected by useState
+// ensure to destructure at top first, since data inject by useState (Hooks rules)
 function App() {
   const { count, inc } = store; // must at top, or may get React warning
 }
 ```
 
-### 4. react<18 batch update
+---
+
+**\* react<18 batch update**
 
 ```jsx
 // to use batch update when react<18:
@@ -109,25 +113,19 @@ resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ## Re-render on demand
 
 ```jsx
-const store = resso({
-  count: 0,
-  text: 'hello',
-  inc: () => store.count++,
-});
-
 // No text update, no re-render
 function Text() {
   const { text } = store;
   return <p>{text}</p>;
 }
 
-// Only count update, re-render
+// Only when count updates, re-render
 function Count() {
   const { count } = store;
   return <p>{count}</p>;
 }
 
-// No data in view, no re-render
+// No data used in jsx, no re-render
 function Control() {
   const { inc } = store;
   return (
