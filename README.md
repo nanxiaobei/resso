@@ -95,7 +95,7 @@ Object.assign(store, { a, b, c });
 **Use**
 
 ```jsx
-// ensure to destructure at top first, since data inject by useState (Hooks rules)
+// ensure to destructure at top first, since data injected by useState (Hooks rules)
 function App() {
   const { count, inc } = store; // must at top, or may get React warning
 }
