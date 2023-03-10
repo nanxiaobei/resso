@@ -52,7 +52,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // must destructure at top first 🥷
+  const { count } = store; // data in UI must destructure at top first 🥷
   return (
     <>
       {count}
@@ -74,7 +74,7 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   inc: () => {
-    const { count } = store; // must destructure at top first, also 🥷
+    const { count } = store; // data in method must destructure at top, also 🥷
   },
 });
 ```
@@ -95,9 +95,9 @@ Object.assign(store, { a, b, c });
 **Use**
 
 ```jsx
-// ensure to destructure at top first, since data injected by useState (Hooks rules)
+// data in UI must destructure at top first, since they are injected by useState
 function App() {
-  const { count, inc } = store; // must at top, or may get React warning
+  const { count } = store; // must at top, or may get React warning (Hooks rules)
 }
 ```
 
@@ -113,24 +113,23 @@ resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ## Re-render on demand
 
 ```jsx
-// No text update, no re-render
+// no text update, no re-render
 function Text() {
   const { text } = store;
   return <p>{text}</p>;
 }
 
-// Only when count updates, re-render
+// only when count updates, re-render
 function Count() {
   const { count } = store;
   return <p>{count}</p>;
 }
 
-// No data used in jsx, no re-render
+// no data in UI, no re-render
 function Control() {
-  const { inc } = store;
   return (
     <>
-      <button onClick={inc}>+</button>
+      <button onClick={store.inc}>+</button>
       <button onClick={() => store.count--}>-</button>
     </>
   );
