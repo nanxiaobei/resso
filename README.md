@@ -56,7 +56,7 @@ function App() {
   return (
     <>
       {count}
-      <button onClick={() => store.count++}>+</button>
+      <button onClick={() => ++store.count}>+</button>
     </>
   );
 }
@@ -130,7 +130,7 @@ function Control() {
   return (
     <>
       <button onClick={store.inc}>+</button>
-      <button onClick={() => store.count--}>-</button>
+      <button onClick={() => --store.count}>-</button>
     </>
   );
 }

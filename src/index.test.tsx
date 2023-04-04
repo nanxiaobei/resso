@@ -7,7 +7,7 @@ import resso from './index';
 test('resso', () => {
   const store = resso({
     count: 0,
-    inc: () => store.count++,
+    inc: () => ++store.count,
   });
 
   const App = () => {
@@ -16,7 +16,7 @@ test('resso', () => {
       <>
         <p>{count}</p>
         <button onClick={inc}>btn1</button>
-        <button onClick={() => store.count++}>btn2</button>
+        <button onClick={() => ++store.count}>btn2</button>
         <button onClick={() => store('count', (prev) => prev + 1)}>btn3</button>
       </>
     );
