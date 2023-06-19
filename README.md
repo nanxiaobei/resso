@@ -52,7 +52,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // data in UI must destructure at top first 🥷
+  const { count } = store; // data used in UI → must destructure at top first 🥷
   return (
     <>
       {count}
@@ -74,7 +74,7 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   inc: () => {
-    const { count } = store; // data in methods must destructure at top, also 🥷
+    const { count } = store; // data used in method → must destructure at top, also 🥷
   },
 });
 ```
@@ -82,11 +82,9 @@ const store = resso({
 **Update**
 
 ```jsx
-// single update → directly assign
-store.count = count + 1;
-
-// single update → updater funtion
-store('count', (prev) => prev + 1);
+// single update
+store.count = count + 1; // directly assign
+store('count', (prev) => prev + 1); // or updater funtion
 
 // multiple updates
 Object.assign(store, { a, b, c });
@@ -95,7 +93,7 @@ Object.assign(store, { a, b, c });
 **Use**
 
 ```jsx
-// data in UI must destructure at top first, since they were injected by useState
+// data used in UI, must destructure at top first, because it's calling `useState`
 function App() {
   const { count } = store; // must at top, or may get React warning (Hooks rules)
 }
