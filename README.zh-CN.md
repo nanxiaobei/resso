@@ -52,7 +52,7 @@ import resso from 'resso';
 const store = resso({ count: 0, text: 'hello' });
 
 function App() {
-  const { count } = store; // UI 中用到的数据 → 必须在顶层先解构 🥷
+  const { count } = store; // UI 中用到的数据 → 须在顶层先解构 🥷
   return (
     <>
       {count}
@@ -74,7 +74,7 @@ import resso from 'resso';
 const store = resso({
   count: 0,
   inc: () => {
-    const { count } = store; // 方法中用到的数据 → 必须在顶层先解构，同样 🥷
+    const { count } = store; // 方法中用到的数据 → 须在顶层先解构，同样 🥷
   },
 });
 ```
@@ -93,9 +93,9 @@ Object.assign(store, { a, b, c });
 **使用**
 
 ```jsx
-// UI 中用到的数据，必须在顶层先解构，因为其实是调用 `useState`
+// UI 中用到的数据，须在顶层先解构，因为其实是调用 `useState`
 function App() {
-  const { count } = store; // 必须在最顶层，否则将有 React 报错 (Hooks 规则)
+  const { count } = store; // 须在最顶层，否则将有 React 报错 (Hooks 规则)
 }
 ```
 
