@@ -56,7 +56,7 @@ function App() {
   return (
     <>
       {count}
-      <button onClick={() => ++store.count}>+</button>
+      <button onClick={() => (store.count += 1)}>+</button>
     </>
   );
 }
@@ -73,8 +73,10 @@ import resso from 'resso';
 
 const store = resso({
   count: 0,
+  text: 'hello',
   inc: () => {
     const { count } = store; // 方法中用到的数据 → 须在顶层先解构，同样 🥷
+    store.count = count + 1;
   },
 });
 ```
@@ -83,11 +85,12 @@ const store = resso({
 
 ```jsx
 // 更新单个
-store.count = count + 1; // 直接赋值
+store.count = 60; // 直接赋值
 store('count', (prev) => prev + 1); // 或 更新函数
 
 // 更新多个
-Object.assign(store, { a, b, c });
+store({ count: 60, text: '' }); // 直接赋值
+store((prev) => ({ count: prev.count + 1, text: prev.text ? '' : 'hello' })); // 或 更新函数
 ```
 
 **使用**
@@ -128,7 +131,7 @@ function Control() {
   return (
     <>
       <button onClick={store.inc}>+</button>
-      <button onClick={() => --store.count}>-</button>
+      <button onClick={() => (store.count -= 1)}>-</button>
     </>
   );
 }

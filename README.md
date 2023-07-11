@@ -56,7 +56,7 @@ function App() {
   return (
     <>
       {count}
-      <button onClick={() => ++store.count}>+</button>
+      <button onClick={() => (store.count += 1)}>+</button>
     </>
   );
 }
@@ -73,8 +73,10 @@ import resso from 'resso';
 
 const store = resso({
   count: 0,
+  text: 'hello',
   inc: () => {
     const { count } = store; // data used in method → must destructure at top, also 🥷
+    store.count = count + 1;
   },
 });
 ```
@@ -83,11 +85,12 @@ const store = resso({
 
 ```jsx
 // single update
-store.count = count + 1; // directly assign
+store.count = 60; // directly assign
 store('count', (prev) => prev + 1); // or updater funtion
 
 // multiple updates
-Object.assign(store, { a, b, c });
+store({ count: 60, text: '' }); // directly assign
+store((prev) => ({ count: prev.count + 1, text: prev.text ? '' : 'hello' })); // or updater funtion
 ```
 
 **Use**
@@ -128,7 +131,7 @@ function Control() {
   return (
     <>
       <button onClick={store.inc}>+</button>
-      <button onClick={() => --store.count}>-</button>
+      <button onClick={() => (store.count -= 1)}>-</button>
     </>
   );
 }
