@@ -2,49 +2,58 @@ import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
 type VoidFn = () => void;
 type AnyFn = (...args: unknown[]) => unknown;
-type Updater<V> = (val: V) => V;
 
-type Data = Record<string, unknown>;
-type State<T> = {
-  [K in keyof T]: {
-    subscribe: (listener: VoidFn) => VoidFn;
-    getSnapshot: () => T[K];
-    useSnapshot: () => T[K];
-    setSnapshot: (val: T[K]) => void;
-  };
+type OneAction<V> = V | ((val: V) => V);
+type ObjUpdater<Obj> = (obj: Obj) => Partial<Obj>;
+
+type Setter<Obj> = {
+  <K extends keyof Obj>(key: K, oneAction: OneAction<Obj[K]>): void;
+  (obj: Partial<Obj>): void;
+  (objUpdater: ObjUpdater<Obj>): void;
 };
-type Methods<T> = Record<keyof T, AnyFn>;
-type Setter<T> = <K extends keyof T>(key: K, updater: Updater<T[K]>) => void;
-type Store<T> = T & Setter<T>;
+
+type Store<Obj> = Obj & Setter<Obj>;
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
-const __DEV_ERR__ = (msg: string) => {
-  if (__DEV__) {
-    throw new Error(msg);
-  }
+
+const isObj = (val: unknown) => {
+  return Object.prototype.toString.call(val) === '[object Object]';
 };
 
-let isInMethod = false;
+let isGetStateInMethod = false;
 let run = (fn: VoidFn) => {
   fn();
 };
 
-const resso = <T extends Data>(data: T): Store<T> => {
-  if (__DEV__ && Object.prototype.toString.call(data) !== '[object Object]') {
+const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
+  type K = keyof Obj;
+  type V = Obj[K];
+  type State = Record<
+    K,
+    {
+      subscribe: (listener: VoidFn) => VoidFn;
+      getSnapshot: () => Obj[K];
+      useSnapshot: () => Obj[K];
+      setSnapshot: (val: Obj[K]) => void;
+    }
+  >;
+  type Methods = Record<K, AnyFn>;
+
+  if (__DEV__ && !isObj(obj)) {
     throw new Error('object required');
   }
 
-  const state: State<T> = {} as State<T>;
-  const methods: Methods<T> = {} as Methods<T>;
+  const state: State = {} as State;
+  const methods: Methods = {} as Methods;
 
-  Object.keys(data).forEach((key: keyof T) => {
-    const initVal = data[key];
+  Object.keys(obj).forEach((key: K) => {
+    const initVal = obj[key];
 
     if (initVal instanceof Function) {
       methods[key] = (...args: unknown[]) => {
-        isInMethod = true;
+        isGetStateInMethod = true;
         const res = initVal(...args);
-        isInMethod = false;
+        isGetStateInMethod = false;
         return res;
       };
       return;
@@ -57,10 +66,10 @@ const resso = <T extends Data>(data: T): Store<T> => {
         listeners.add(listener);
         return () => listeners.delete(listener);
       },
-      getSnapshot: () => data[key],
+      getSnapshot: () => obj[key],
       setSnapshot: (val) => {
-        if (val !== data[key]) {
-          data[key] = val;
+        if (val !== obj[key]) {
+          obj[key] = val;
           run(() => listeners.forEach((listener) => listener()));
         }
       },
@@ -74,49 +83,75 @@ const resso = <T extends Data>(data: T): Store<T> => {
     };
   });
 
-  const setState = (key: keyof T, val: T[keyof T] | Updater<T[keyof T]>) => {
-    if (key in data) {
+  const setState = (key: K, val: unknown | OneAction<V>) => {
+    if (key in obj) {
       if (key in state) {
-        const newVal = val instanceof Function ? val(data[key]) : val;
-        state[key].setSnapshot(newVal);
-      } else {
-        __DEV_ERR__(`\`${key as string}\` is a method, can not update`);
+        const newVal = val instanceof Function ? val(obj[key]) : val;
+        state[key].setSnapshot(newVal as V);
+      } else if (__DEV__) {
+        throw new Error(`\`${key as string}\` is a method, can not update`);
       }
-    } else {
-      __DEV_ERR__(`\`${key as string}\` is not initialized in store`);
+    } else if (__DEV__) {
+      throw new Error(`\`${key as string}\` is not initialized in store`);
     }
   };
 
   return new Proxy(
-    (() => undefined) as unknown as Store<T>,
+    (() => undefined) as unknown as Store<Obj>,
     {
-      get: (_, key: keyof T) => {
+      get: (_target, key: K) => {
         if (key in methods) {
           return methods[key];
         }
 
-        if (isInMethod) {
-          return data[key];
+        if (key in state) {
+          if (isGetStateInMethod) {
+            return obj[key];
+          }
+
+          try {
+            return state[key].useSnapshot();
+          } catch (err) {
+            return obj[key];
+          }
         }
 
-        try {
-          return state[key].useSnapshot();
-        } catch (err) {
-          return data[key];
+        if (__DEV__) {
+          if (key !== 'prototype' && key !== 'name' && key !== 'displayName') {
+            throw new Error(`\`${key as string}\` is not initialized in store`);
+          }
         }
       },
-      set: (_, key: keyof T, val: T[keyof T]) => {
+      set: (_target, key: K, val: V) => {
         setState(key, val);
         return true;
       },
-      apply: (_, __, [key, updater]: [keyof T, Updater<T[keyof T]>]) => {
-        if (typeof updater === 'function') {
-          setState(key, updater);
-        } else {
-          __DEV_ERR__(`updater for \`${key as string}\` should be a function`);
+      apply: (
+        _target,
+        _thisArg,
+        [firstArg, oneAction]: [K | Obj | ObjUpdater<Obj>, OneAction<V>]
+      ) => {
+        if (typeof firstArg === 'string') {
+          setState(firstArg, oneAction);
+          return;
+        }
+
+        if (isObj(firstArg)) {
+          const newObj = firstArg as Obj;
+          Object.keys(newObj).forEach((key) => {
+            setState(key, newObj[key]);
+          });
+          return;
+        }
+
+        if (typeof firstArg === 'function') {
+          const newObj = firstArg(obj);
+          Object.keys(newObj).forEach((key) => {
+            setState(key, newObj[key]);
+          });
         }
       },
-    } as ProxyHandler<Store<T>>
+    } as ProxyHandler<Store<Obj>>
   );
 };
 

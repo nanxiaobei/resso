@@ -7,17 +7,22 @@ import resso from './index';
 test('resso', () => {
   const store = resso({
     count: 0,
-    inc: () => ++store.count,
+    incOneA: () => (store.count += 1),
+    incOneB: () => store('count', (prev) => prev + 1),
+    incMoreA: () => store({ count: store.count + 1 }),
+    incMoreB: () => store(({ count }) => ({ count: count + 1 })),
   });
 
   const App = () => {
-    const { count, inc } = store;
+    const { count } = store;
     return (
       <>
         <p>{count}</p>
-        <button onClick={inc}>btn1</button>
-        <button onClick={() => ++store.count}>btn2</button>
-        <button onClick={() => store('count', (prev) => prev + 1)}>btn3</button>
+        <button onClick={store.incOneA}>btn1</button>
+        <button onClick={store.incOneB}>btn2</button>
+        <button onClick={() => (store.count += 1)}>btn3</button>
+        <button onClick={store.incMoreA}>btn4</button>
+        <button onClick={store.incMoreB}>btn5</button>
       </>
     );
   };
@@ -31,16 +36,16 @@ test('resso', () => {
 
   expect(() => {
     // @ts-ignore
-    store.a = 1;
+    const { a } = store;
   }).toThrow();
 
   expect(() => {
     // @ts-ignore
-    store('count', 1);
+    store.a = 1;
   }).toThrow();
 
   expect(() => {
-    store.inc = () => -1;
+    store.incOneA = () => -1;
   }).toThrow();
 
   fireEvent.click(getByText('btn1'));
@@ -51,6 +56,12 @@ test('resso', () => {
 
   fireEvent.click(getByText('btn3'));
   expect(getByText('3')).toBeInTheDocument();
+
+  fireEvent.click(getByText('btn4'));
+  expect(getByText('4')).toBeInTheDocument();
+
+  fireEvent.click(getByText('btn5'));
+  expect(getByText('5')).toBeInTheDocument();
 });
 
 test('resso.config', () => {
