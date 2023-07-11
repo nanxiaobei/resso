@@ -89,8 +89,11 @@ store.count = 60; // 直接赋值
 store('count', (prev) => prev + 1); // 或 更新函数
 
 // 更新多个
-store({ count: 60, text: '' }); // 直接赋值
-store((prev) => ({ count: prev.count + 1, text: prev.text ? '' : 'hello' })); // 或 更新函数
+store({ count: 60, text: 'world' }); // 直接赋值
+store((prev) => ({
+  count: prev.count + 1,
+  text: prev.text === 'hello' ? 'world' : 'hello',
+})); // 或 更新函数
 ```
 
 **使用**

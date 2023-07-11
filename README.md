@@ -89,8 +89,11 @@ store.count = 60; // directly assign
 store('count', (prev) => prev + 1); // or updater funtion
 
 // multiple updates
-store({ count: 60, text: '' }); // directly assign
-store((prev) => ({ count: prev.count + 1, text: prev.text ? '' : 'hello' })); // or updater funtion
+store({ count: 60, text: 'world' }); // directly assign
+store((prev) => ({
+  count: prev.count + 1,
+  text: prev.text === 'hello' ? 'world' : 'hello',
+})); // or updater funtion
 ```
 
 **Use**
