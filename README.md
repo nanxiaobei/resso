@@ -1,7 +1,7 @@
 <div align="center">
 <h1>🪢 resso</h1>
 
-The Simplest React State Manager
+The simplest React state manager
 
 _Auto on-demand re-render ⚡️_
 

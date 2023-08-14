@@ -1,7 +1,7 @@
 {
   "name": "resso",
   "version": "0.15.0",
-  "description": "The Simplest React State Manager",
+  "description": "The simplest React state manager",
   "license": "MIT",
   "keywords": [
     "react",
