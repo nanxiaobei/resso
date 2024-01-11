@@ -58,10 +58,18 @@ npm i resso
 ```jsx
 import resso from 'resso';
 
-const store = resso({ count: 0, text: 'hello' });
+const store = resso({
+  count: 0,
+  text: 'hello',
+  inc() {
+    const { count } = store; // 须在顶层解构（若在方法中用到）
+    store.count = count + 1;
+  },
+});
 
 function App() {
-  const { count } = store; // UI 中用到的数据 → 须在顶层先解构 🥷
+  const { count } = store; // 须在顶层解构（若在 UI 中用到）
+
   return (
     <>
       {count}
@@ -71,55 +79,39 @@ function App() {
 }
 ```
 
+\* 顶部解构其实是调用 `useState`（Hooks 规则，否则将有 React 报错）
+
 [![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
 
 ## API
 
-**初始化**
+**更新单个**
 
 ```jsx
-import resso from 'resso';
+store.count = 60;
 
-const store = resso({
-  count: 0,
-  text: 'hello',
-  inc: () => {
-    const { count } = store; // 方法中用到的数据 → 须在顶层先解构，同样 🥷
-    store.count = count + 1;
-  },
+store('count', (c) => c + 1);
+```
+
+**更新多个**
+
+```jsx
+store({
+  count: 60,
+  text: 'world',
 });
-```
 
-**更新**
-
-```jsx
-// 更新单个
-store.count = 60; // 直接赋值
-store('count', (prev) => prev + 1); // 或 更新函数
-
-// 更新多个
-store({ count: 60, text: 'world' }); // 直接赋值
-store((prev) => ({
-  count: prev.count + 1,
-  text: prev.text === 'hello' ? 'world' : 'hello',
-})); // 或 更新函数
-```
-
-**使用**
-
-```jsx
-// UI 中用到的数据，须在顶层先解构，因为其实是调用 `useState`
-function App() {
-  const { count } = store; // 须在最顶层，否则将有 React 报错 (Hooks 规则)
-}
+store((s) => ({
+  count: s.count + 1,
+  text: s.text === 'hello' ? 'world' : 'hello',
+}));
 ```
 
 ---
 
-**\* react<18 批量更新**
+**\* `react<18` 批量更新**
 
 ```jsx
-// 在 react<18 时使用批量更新：
 resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在项目入口
 ```
 
@@ -138,7 +130,7 @@ function Count() {
   return <p>{count}</p>;
 }
 
-// 没有 data 在 UI 中，绝不 re-render
+// 没有 state 在 UI 中，绝不 re-render
 function Control() {
   return (
     <>

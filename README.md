@@ -58,10 +58,18 @@ npm i resso
 ```jsx
 import resso from 'resso';
 
-const store = resso({ count: 0, text: 'hello' });
+const store = resso({
+  count: 0,
+  text: 'hello',
+  inc() {
+    const { count } = store; // must destructure at top (if use in method)
+    store.count = count + 1;
+  },
+});
 
 function App() {
-  const { count } = store; // data used in UI → must destructure at top first 🥷
+  const { count } = store; // must destructure at top (if use in UI)
+
   return (
     <>
       {count}
@@ -71,55 +79,39 @@ function App() {
 }
 ```
 
+\* destructure at top is calling `useState` (Hooks rules, or may get React error)
+
 [![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
 
 ## API
 
-**Initialize**
+**Single update**
 
 ```jsx
-import resso from 'resso';
+store.count = 60;
 
-const store = resso({
-  count: 0,
-  text: 'hello',
-  inc: () => {
-    const { count } = store; // data used in method → must destructure at top, also 🥷
-    store.count = count + 1;
-  },
+store('count', (c) => c + 1);
+```
+
+**Multiple update**
+
+```jsx
+store({
+  count: 60,
+  text: 'world',
 });
-```
 
-**Update**
-
-```jsx
-// single update
-store.count = 60; // directly assign
-store('count', (prev) => prev + 1); // or updater funtion
-
-// multiple updates
-store({ count: 60, text: 'world' }); // directly assign
-store((prev) => ({
-  count: prev.count + 1,
-  text: prev.text === 'hello' ? 'world' : 'hello',
-})); // or updater funtion
-```
-
-**Use**
-
-```jsx
-// data used in UI, must destructure at top first, because it's calling `useState`
-function App() {
-  const { count } = store; // must at top, or may get React warning (Hooks rules)
-}
+store((s) => ({
+  count: s.count + 1,
+  text: s.text === 'hello' ? 'world' : 'hello',
+}));
 ```
 
 ---
 
-**\* react<18 batch update**
+**\* `react<18` batch update**
 
 ```jsx
-// to use batch update when react<18:
 resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ```
 
@@ -138,7 +130,7 @@ function Count() {
   return <p>{count}</p>;
 }
 
-// no data in UI, no re-render
+// no state in UI, no re-render
 function Control() {
   return (
     <>
