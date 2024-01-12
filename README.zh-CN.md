@@ -10,11 +10,7 @@ Create now ➫ [🔗 kee.so](https://kee.so/)
 <div align="center">
 <h1>🪢 resso</h1>
 
-最简单的 React 状态管理器
-
-_自动按需 re-render ⚡️_
-
----
+最简单的 React 状态管理器。_自动按需 re-render ⚡️_
 
 **R**eactive **E**legant **S**hared **S**tore **O**bject
 
@@ -30,8 +26,6 @@ _自动按需 re-render ⚡️_
 [English](./README.md) · 简体中文
 
 </div>
-
----
 
 ## 介绍
 

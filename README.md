@@ -10,11 +10,7 @@ Create now ➫ [🔗 kee.so](https://kee.so/)
 <div align="center">
 <h1>🪢 resso</h1>
 
-The simplest React state manager
-
-_Auto on-demand re-render ⚡️_
-
----
+The simplest React state manager. _Auto on-demand re-render ⚡️_
 
 **R**eactive **E**legant **S**hared **S**tore **O**bject
 
@@ -30,8 +26,6 @@ _Auto on-demand re-render ⚡️_
 English · [简体中文](./README.zh-CN.md)
 
 </div>
-
----
 
 ## Introduction
 
