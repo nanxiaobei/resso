@@ -77,7 +77,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
         return useSyncExternalStore(
           state[key].subscribe,
           state[key].getSnapshot,
-          state[key].getSnapshot
+          state[key].setSnapshot
         );
       },
     };
