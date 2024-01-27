@@ -77,7 +77,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
         return useSyncExternalStore(
           state[key].subscribe,
           state[key].getSnapshot,
-          state[key].getSnapshot
+          state[key].getSnapshot,
         );
       },
     };
@@ -129,7 +129,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
       apply: (
         _target,
         _thisArg,
-        [firstArg, oneAction]: [K | Obj | ObjUpdater<Obj>, OneAction<V>]
+        [firstArg, oneAction]: [K | Obj | ObjUpdater<Obj>, OneAction<V>],
       ) => {
         if (typeof firstArg === 'string') {
           setState(firstArg, oneAction);
@@ -151,7 +151,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
           });
         }
       },
-    } as ProxyHandler<Store<Obj>>
+    } as ProxyHandler<Store<Obj>>,
   );
 };
 
