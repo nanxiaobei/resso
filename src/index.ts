@@ -1,4 +1,4 @@
-import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react'
+import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react';
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
 declare module 'react' {
@@ -6,7 +6,7 @@ declare module 'react' {
     ReactCurrentOwner: {
       current: null | unknown;
     };
-  }
+  };
 }
 
 type VoidFn = () => void;
@@ -118,7 +118,10 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
             return obj[key];
           }
 
-          if (__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner.current !== null) {
+          if (
+            __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner
+              .current !== null
+          ) {
             return state[key].useSnapshot();
           } else {
             return obj[key];
