@@ -5,5 +5,10 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
+    environment: 'jsdom',
+    coverage: {
+      enabled: true,
+      include: ['src/**'],
+    },
   },
 });
