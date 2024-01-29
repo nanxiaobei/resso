@@ -12,7 +12,10 @@
     "state",
     "resso"
   ],
-  "repository": "https://github.com/nanxiaobei/resso.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nanxiaobei/resso.git"
+  },
   "author": "nanxiaobei <nanxiaobei@gmail.com>",
   "homepage": "https://github.com/nanxiaobei/resso",
   "bugs": "https://github.com/nanxiaobei/resso/issues",
