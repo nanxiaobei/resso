@@ -112,6 +112,11 @@ export const refs = {
 
 // App.js
 import store, { refs } from './store';
+
+function App() {
+  refs.total = 100;
+  return <div />;
+}
 ```
 
 ---
