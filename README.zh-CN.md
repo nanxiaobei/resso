@@ -100,6 +100,20 @@ store((s) => ({
 }));
 ```
 
+**非 state 变量 (Refs)**
+
+事实上它与 resso 无关，只是 JavaScript。你可以这样做：
+
+```jsx
+// store.js
+export const refs = {
+  total: 0,
+};
+
+// App.js
+import store, { refs } from './store';
+```
+
 ---
 
 **\* `react<18` 批量更新**

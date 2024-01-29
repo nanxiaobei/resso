@@ -100,6 +100,20 @@ store((s) => ({
 }));
 ```
 
+**None-state variables (Refs)**
+
+Actually it's not related to resso, it's just JavaScript. You can do it like this:
+
+```jsx
+// store.js
+export const refs = {
+  total: 0,
+};
+
+// App.js
+import store, { refs } from './store';
+```
+
 ---
 
 **\* `react<18` batch update**
