@@ -1,6 +1,6 @@
-import dts from 'rollup-plugin-dts';
 import typescript from '@rollup/plugin-typescript';
 import { readFileSync } from 'fs';
+import dts from 'rollup-plugin-dts';
 
 const pkg = JSON.parse(readFileSync('./package.json') as unknown as string);
 

@@ -1,7 +1,7 @@
-import ReactDOM from 'react-dom';
-import { expect, test } from 'vitest';
 import '@testing-library/jest-dom';
 import { fireEvent, render } from '@testing-library/react';
+import ReactDOM from 'react-dom';
+import { expect, test } from 'vitest';
 import resso from './index';
 
 test('resso', () => {
