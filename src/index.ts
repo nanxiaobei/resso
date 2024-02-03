@@ -3,16 +3,16 @@ import { useSyncExternalStore } from 'use-sync-external-store/shim';
 type VoidFn = () => void;
 type AnyFn = (...args: unknown[]) => unknown;
 
-type OneAction<V> = V | ((val: V) => V);
+type KeyUpdater<V> = V | ((val: V) => V);
 type ObjUpdater<Obj> = (obj: Obj) => Partial<Obj>;
 
-type Setter<Obj> = {
-  <K extends keyof Obj>(key: K, oneAction: OneAction<Obj[K]>): void;
+type SetStore<Obj> = {
+  <K extends keyof Obj>(key: K, keyUpdater: KeyUpdater<Obj[K]>): void;
   (obj: Partial<Obj>): void;
   (objUpdater: ObjUpdater<Obj>): void;
 };
 
-type Store<Obj> = Obj & Setter<Obj>;
+type Store<Obj> = Obj & SetStore<Obj>;
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
 
@@ -20,7 +20,6 @@ const isObj = (val: unknown) => {
   return Object.prototype.toString.call(val) === '[object Object]';
 };
 
-let isGetStateInMethod = false;
 let run = (fn: VoidFn) => {
   fn();
 };
@@ -28,68 +27,56 @@ let run = (fn: VoidFn) => {
 const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
   type K = keyof Obj;
   type V = Obj[K];
+  type Actions = Record<K, AnyFn>;
+
   type State = Record<
     K,
     {
-      subscribe: (listener: VoidFn) => VoidFn;
+      subscribe: (setter: VoidFn) => VoidFn;
       getSnapshot: () => Obj[K];
-      useSnapshot: () => Obj[K];
-      setSnapshot: (val: Obj[K]) => void;
+      triggerUpdate: () => void;
     }
   >;
-  type Methods = Record<K, AnyFn>;
 
   if (__DEV__ && !isObj(obj)) {
     throw new Error('object required');
   }
 
   const state: State = {} as State;
-  const methods: Methods = {} as Methods;
+  const actions: Actions = {} as Actions;
 
   Object.keys(obj).forEach((key: K) => {
     const initVal = obj[key];
 
-    if (initVal instanceof Function) {
-      methods[key] = (...args: unknown[]) => {
-        isGetStateInMethod = true;
-        const res = initVal(...args);
-        isGetStateInMethod = false;
-        return res;
-      };
+    // actions
+    if (typeof initVal === 'function') {
+      actions[key] = initVal as AnyFn;
       return;
     }
 
-    const listeners = new Set<VoidFn>();
+    // state
+    const setters = new Set<VoidFn>();
 
     state[key] = {
-      subscribe: (listener) => {
-        listeners.add(listener);
-        return () => listeners.delete(listener);
+      subscribe: (setter) => {
+        setters.add(setter);
+        return () => setters.delete(setter);
       },
       getSnapshot: () => obj[key],
-      setSnapshot: (val) => {
-        if (val !== obj[key]) {
-          obj[key] = val;
-          run(() => listeners.forEach((listener) => listener()));
-        }
-      },
-      useSnapshot: () => {
-        return useSyncExternalStore(
-          state[key].subscribe,
-          state[key].getSnapshot,
-          state[key].getSnapshot,
-        );
-      },
+      triggerUpdate: () => setters.forEach((setter) => setter()),
     };
   });
 
-  const setState = (key: K, val: unknown | OneAction<V>) => {
+  const setKey = (key: K, val: unknown | KeyUpdater<V>) => {
     if (key in obj) {
       if (key in state) {
         const newVal = val instanceof Function ? val(obj[key]) : val;
-        state[key].setSnapshot(newVal as V);
+        if (obj[key] !== newVal) {
+          obj[key] = newVal;
+          run(() => state[key].triggerUpdate());
+        }
       } else if (__DEV__) {
-        throw new Error(`\`${key as string}\` is a method, can not update`);
+        throw new Error(`\`${key as string}\` is a action, can not update`);
       }
     } else if (__DEV__) {
       throw new Error(`\`${key as string}\` is not initialized in store`);
@@ -100,17 +87,17 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
     (() => undefined) as unknown as Store<Obj>,
     {
       get: (_target, key: K) => {
-        if (key in methods) {
-          return methods[key];
+        if (key in actions) {
+          return actions[key];
         }
 
         if (key in state) {
-          if (isGetStateInMethod) {
-            return obj[key];
-          }
-
           try {
-            return state[key].useSnapshot();
+            return useSyncExternalStore(
+              state[key].subscribe,
+              state[key].getSnapshot,
+              state[key].getSnapshot,
+            );
           } catch (err) {
             return obj[key];
           }
@@ -123,31 +110,31 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
         }
       },
       set: (_target, key: K, val: V) => {
-        setState(key, val);
+        setKey(key, val);
         return true;
       },
       apply: (
         _target,
         _thisArg,
-        [firstArg, oneAction]: [K | Obj | ObjUpdater<Obj>, OneAction<V>],
+        [objKey, keyUpdater]: [K | Obj | ObjUpdater<Obj>, KeyUpdater<V>],
       ) => {
-        if (typeof firstArg === 'string') {
-          setState(firstArg, oneAction);
+        if (typeof objKey === 'string') {
+          setKey(objKey, keyUpdater);
           return;
         }
 
-        if (isObj(firstArg)) {
-          const newObj = firstArg as Obj;
+        if (isObj(objKey)) {
+          const newObj = objKey as Obj;
           Object.keys(newObj).forEach((key) => {
-            setState(key, newObj[key]);
+            setKey(key, newObj[key]);
           });
           return;
         }
 
-        if (typeof firstArg === 'function') {
-          const newObj = firstArg(obj);
+        if (typeof objKey === 'function') {
+          const newObj = objKey(obj);
           Object.keys(newObj).forEach((key) => {
-            setState(key, newObj[key]);
+            setKey(key, newObj[key]);
           });
         }
       },
