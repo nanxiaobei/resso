@@ -43,6 +43,8 @@ pnpm add resso
 # or
 yarn add resso
 # or
+bun add resso
+# or
 npm i resso
 ```
 
