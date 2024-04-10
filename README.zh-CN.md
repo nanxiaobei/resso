@@ -1,7 +1,7 @@
 <div align="center">
-<p><a href="https://kee.so/" target="_blank"><img src="https://i.imgur.com/x5SRUoo.png" alt="kee.so" /></a></p>
 
-Create now ➫ [🔗 kee.so](https://kee.so/)
+Link in bio to **widgets**,
+your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 
 </div>
 
@@ -114,8 +114,8 @@ export const refs = {
 import store, { refs } from './store';
 
 function App() {
-    refs.total = 100;
-    return <div />;
+  refs.total = 100;
+  return <div />;
 }
 ```
 
