@@ -100,7 +100,7 @@ store((s) => ({
 }));
 ```
 
-**非 state 变量 (Refs)**
+**非 state 共享变量 (Refs)**
 
 事实上它与 resso 无关，只是 JavaScript。你可以这样做：
 

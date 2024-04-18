@@ -102,7 +102,7 @@ store((s) => ({
 }));
 ```
 
-**None-state variables (Refs)**
+**Non-state shared vars (Refs)**
 
 Actually it's not related to resso, it's just JavaScript. You can do it like this:
 
