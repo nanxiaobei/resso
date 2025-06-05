@@ -18,10 +18,7 @@ const __DEV__ = process.env.NODE_ENV !== 'production';
 const isObj = (val: unknown) =>
   Object.prototype.toString.call(val) === '[object Object]';
 
-const deepClone =
-  typeof structuredClone === 'function'
-    ? structuredClone
-    : (val: unknown) => JSON.parse(JSON.stringify(val));
+const deepClone = (val: unknown) => JSON.parse(JSON.stringify(val));
 
 let run = (fn: VoidFn) => {
   fn();
