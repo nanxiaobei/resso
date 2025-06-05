@@ -104,7 +104,7 @@ store((s) => ({
 
 **Non-state shared vars (Refs)**
 
-Actually it's not related to resso, it's just JavaScript. You can do it like this:
+Actually, it's not related to resso, it's just JavaScript. You can do it like this:
 
 ```jsx
 // store.js
