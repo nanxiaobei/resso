@@ -3,50 +3,57 @@ import { useSyncExternalStore } from 'use-sync-external-store/shim';
 type VoidFn = () => void;
 type AnyFn = (...args: unknown[]) => unknown;
 
-type KeyUpdater<V> = V | ((val: V) => V);
-type ObjUpdater<Obj> = (obj: Obj) => Partial<Obj>;
+type KeyUpdater<V> = V | ((prev: V) => V);
+type DataUpdater<V> = Partial<V> | ((prev: V) => Partial<V>);
 
-type SetStore<Obj> = {
-  <K extends keyof Obj>(key: K, updater: KeyUpdater<Obj[K]>): void;
-  (obj: Partial<Obj>): void;
-  (updater: ObjUpdater<Obj>): void;
+type SetStore<Data> = {
+  <K extends keyof Data>(key: K, updater: KeyUpdater<Data[K]>): void;
+  (updater: DataUpdater<Data>): void;
 };
 
-type Store<Obj> = Obj & SetStore<Obj>;
+type Store<Data> = Data & SetStore<Data>;
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
 
-const isObj = (val: unknown) => {
-  return Object.prototype.toString.call(val) === '[object Object]';
-};
+const isObj = (val: unknown) =>
+  Object.prototype.toString.call(val) === '[object Object]';
+
+const deepClone =
+  typeof structuredClone === 'function'
+    ? structuredClone
+    : (val: unknown) => JSON.parse(JSON.stringify(val));
 
 let run = (fn: VoidFn) => {
   fn();
 };
 
-const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
-  type K = keyof Obj;
-  type V = Obj[K];
+const resso = <Data extends Record<string, unknown>>(
+  data: Data,
+): Store<Data> => {
+  type K = keyof Data;
+  type V = Data[K];
   type Actions = Record<K, AnyFn>;
 
   type State = Record<
     K,
     {
       subscribe: (setter: VoidFn) => VoidFn;
-      getSnapshot: () => Obj[K];
+      getSnapshot: () => Data[K];
       triggerUpdate: () => void;
     }
   >;
 
-  if (__DEV__ && !isObj(obj)) {
+  if (__DEV__ && !isObj(data)) {
     throw new Error('object required');
   }
 
   const state: State = {} as State;
   const actions: Actions = {} as Actions;
 
-  Object.keys(obj).forEach((key: K) => {
-    const initVal = obj[key];
+  const mutableData = deepClone(data);
+
+  Object.keys(data).forEach((key: K) => {
+    const initVal = data[key];
 
     // actions
     if (typeof initVal === 'function') {
@@ -62,29 +69,32 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
         setters.add(setter);
         return () => setters.delete(setter);
       },
-      getSnapshot: () => obj[key],
+      getSnapshot: () => mutableData[key],
       triggerUpdate: () => setters.forEach((setter) => setter()),
     };
   });
 
   const setKey = (key: K, val: unknown | KeyUpdater<V>) => {
-    if (key in obj) {
-      if (key in state) {
-        const newVal = val instanceof Function ? val(obj[key]) : val;
-        if (obj[key] !== newVal) {
-          obj[key] = newVal;
-          run(() => state[key].triggerUpdate());
-        }
-      } else if (__DEV__) {
-        throw new Error(`\`${key as string}\` is an action, can not update`);
+    if (key in state) {
+      const newVal = val instanceof Function ? val(mutableData[key]) : val;
+      if (mutableData[key] !== newVal) {
+        mutableData[key] = newVal;
+        run(() => state[key].triggerUpdate());
       }
-    } else if (__DEV__) {
+      return;
+    }
+
+    if (__DEV__ && key in actions) {
+      throw new Error(`\`${key as string}\` is an action, can not update`);
+    }
+
+    if (__DEV__) {
       throw new Error(`\`${key as string}\` is not initialized in store`);
     }
   };
 
   return new Proxy(
-    Object.assign(() => undefined, obj) as Store<Obj>,
+    Object.assign(() => undefined, mutableData) as Store<Data>,
     {
       get: (_target, key: K) => {
         if (key in actions) {
@@ -100,7 +110,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
             );
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (err) {
-            return obj[key];
+            return mutableData[key];
           }
         }
 
@@ -115,7 +125,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
       apply: (
         _target,
         _thisArg,
-        [key, updater]: [K | Obj | ObjUpdater<Obj>, KeyUpdater<V>],
+        [key, updater]: [K | DataUpdater<Data>, KeyUpdater<V>],
       ) => {
         // store('key', val)
         if (typeof key === 'string') {
@@ -125,22 +135,22 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
 
         // store({ key: val })
         if (isObj(key)) {
-          const newObj = key as Obj;
-          Object.keys(newObj).forEach((k) => {
-            setKey(k, newObj[k]);
+          const newData = key as Data;
+          Object.keys(newData).forEach((k) => {
+            setKey(k, newData[k]);
           });
           return;
         }
 
         // store(prev => next)
         if (typeof key === 'function') {
-          const newObj = key(JSON.parse(JSON.stringify(obj)));
-          Object.keys(newObj).forEach((k) => {
-            setKey(k, newObj[k]);
+          const newData = key(deepClone(mutableData));
+          Object.keys(newData).forEach((k) => {
+            setKey(k, newData[k]);
           });
         }
       },
-    } as ProxyHandler<Store<Obj>>,
+    } as ProxyHandler<Store<Data>>,
   );
 };
 
