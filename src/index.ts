@@ -7,9 +7,9 @@ type KeyUpdater<V> = V | ((val: V) => V);
 type ObjUpdater<Obj> = (obj: Obj) => Partial<Obj>;
 
 type SetStore<Obj> = {
-  <K extends keyof Obj>(key: K, keyUpdater: KeyUpdater<Obj[K]>): void;
+  <K extends keyof Obj>(key: K, updater: KeyUpdater<Obj[K]>): void;
   (obj: Partial<Obj>): void;
-  (objUpdater: ObjUpdater<Obj>): void;
+  (updater: ObjUpdater<Obj>): void;
 };
 
 type Store<Obj> = Obj & SetStore<Obj>;
@@ -76,7 +76,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
           run(() => state[key].triggerUpdate());
         }
       } else if (__DEV__) {
-        throw new Error(`\`${key as string}\` is a action, can not update`);
+        throw new Error(`\`${key as string}\` is an action, can not update`);
       }
     } else if (__DEV__) {
       throw new Error(`\`${key as string}\` is not initialized in store`);
@@ -84,7 +84,7 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
   };
 
   return new Proxy(
-    (() => undefined) as unknown as Store<Obj>,
+    Object.assign(() => undefined, obj) as Store<Obj>,
     {
       get: (_target, key: K) => {
         if (key in actions) {
@@ -98,15 +98,14 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
               state[key].getSnapshot,
               state[key].getSnapshot,
             );
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (err) {
             return obj[key];
           }
         }
 
         if (__DEV__) {
-          if (key !== 'prototype' && key !== 'name' && key !== 'displayName') {
-            throw new Error(`\`${key as string}\` is not initialized in store`);
-          }
+          throw new Error(`\`${key as string}\` is not initialized in store`);
         }
       },
       set: (_target, key: K, val: V) => {
@@ -116,25 +115,28 @@ const resso = <Obj extends Record<string, unknown>>(obj: Obj): Store<Obj> => {
       apply: (
         _target,
         _thisArg,
-        [objKey, keyUpdater]: [K | Obj | ObjUpdater<Obj>, KeyUpdater<V>],
+        [key, updater]: [K | Obj | ObjUpdater<Obj>, KeyUpdater<V>],
       ) => {
-        if (typeof objKey === 'string') {
-          setKey(objKey, keyUpdater);
+        // store('key', val)
+        if (typeof key === 'string') {
+          setKey(key, updater);
           return;
         }
 
-        if (isObj(objKey)) {
-          const newObj = objKey as Obj;
-          Object.keys(newObj).forEach((key) => {
-            setKey(key, newObj[key]);
+        // store({ key: val })
+        if (isObj(key)) {
+          const newObj = key as Obj;
+          Object.keys(newObj).forEach((k) => {
+            setKey(k, newObj[k]);
           });
           return;
         }
 
-        if (typeof objKey === 'function') {
-          const newObj = objKey(obj);
-          Object.keys(newObj).forEach((key) => {
-            setKey(key, newObj[key]);
+        // store(prev => next)
+        if (typeof key === 'function') {
+          const newObj = key(JSON.parse(JSON.stringify(obj)));
+          Object.keys(newObj).forEach((k) => {
+            setKey(k, newObj[k]);
           });
         }
       },
