@@ -3,12 +3,12 @@ import { useSyncExternalStore } from 'use-sync-external-store/shim';
 type VoidFn = () => void;
 type AnyFn = (...args: unknown[]) => unknown;
 
-type KeyUpdater<V> = V | ((prev: V) => V);
-type DataUpdater<V> = Partial<V> | ((prev: V) => Partial<V>);
+type SetKeyAction<V> = V | ((prev: V) => V);
+type SetDataAction<V> = Partial<V> | ((prev: V) => Partial<V>);
 
 type SetStore<Data> = {
-  <K extends keyof Data>(key: K, updater: KeyUpdater<Data[K]>): void;
-  (updater: DataUpdater<Data>): void;
+  <K extends keyof Data>(key: K, val: SetKeyAction<Data[K]>): void;
+  (payload: SetDataAction<Data>): void;
 };
 
 type Store<Data> = Data & SetStore<Data>;
@@ -71,7 +71,7 @@ const resso = <Data extends Record<string, unknown>>(
     };
   });
 
-  const setKey = (key: K, val: unknown | KeyUpdater<V>) => {
+  const setKey = (key: K, val: unknown | SetKeyAction<V>) => {
     if (key in state) {
       const newVal = val instanceof Function ? val(mutableData[key]) : val;
       if (mutableData[key] !== newVal) {
@@ -122,7 +122,7 @@ const resso = <Data extends Record<string, unknown>>(
       apply: (
         _target,
         _thisArg,
-        [key, updater]: [K | DataUpdater<Data>, KeyUpdater<V>],
+        [key, updater]: [K | SetDataAction<Data>, SetKeyAction<V>],
       ) => {
         // store('key', val)
         if (typeof key === 'string') {
