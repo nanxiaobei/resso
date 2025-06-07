@@ -7,6 +7,7 @@ import resso from './index';
 test('resso', () => {
   const store = resso({
     count: 0,
+    list: [],
     incOneA: () => (store.count += 1),
     incOneB: () => store('count', (prev) => prev + 1),
     incMoreA: () => store({ count: store.count + 1 }),
@@ -30,17 +31,21 @@ test('resso', () => {
   const { getByText } = render(<App />);
 
   expect(() => {
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     resso();
   }).toThrow();
 
   expect(() => {
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const { a } = store;
+    a?.();
   }).toThrow();
 
   expect(() => {
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     store.a = 1;
   }).toThrow();
 
