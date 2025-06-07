@@ -18,7 +18,14 @@ const __DEV__ = process.env.NODE_ENV !== 'production';
 const isObj = (val: unknown) =>
   Object.prototype.toString.call(val) === '[object Object]';
 
-const deepClone = (val: unknown) => JSON.parse(JSON.stringify(val));
+function deepClone<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(deepClone) as T;
+  const cloned = {} as T;
+  const keys = Object.keys(obj) as (keyof T)[];
+  for (const key of keys) cloned[key] = deepClone(obj[key]);
+  return cloned;
+}
 
 let run = (fn: VoidFn) => {
   fn();
