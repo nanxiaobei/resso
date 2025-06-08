@@ -18,15 +18,6 @@ const __DEV__ = process.env.NODE_ENV !== 'production';
 const isObj = (val: unknown) =>
   Object.prototype.toString.call(val) === '[object Object]';
 
-function deepClone<T>(obj: T): T {
-  if (obj === null || typeof obj !== 'object') return obj;
-  if (Array.isArray(obj)) return obj.map(deepClone) as T;
-  const cloned = {} as T;
-  const keys = Object.keys(obj) as (keyof T)[];
-  for (const key of keys) cloned[key] = deepClone(obj[key]);
-  return cloned;
-}
-
 let run = (fn: VoidFn) => {
   fn();
 };
@@ -54,8 +45,6 @@ const resso = <Data extends Record<string, unknown>>(
   const state: State = {} as State;
   const actions: Actions = {} as Actions;
 
-  const mutableData = deepClone(data);
-
   Object.keys(data).forEach((key: K) => {
     const initVal = data[key];
 
@@ -73,16 +62,16 @@ const resso = <Data extends Record<string, unknown>>(
         setters.add(setter);
         return () => setters.delete(setter);
       },
-      getSnapshot: () => mutableData[key],
+      getSnapshot: () => data[key],
       triggerUpdate: () => setters.forEach((setter) => setter()),
     };
   });
 
   const setKey = (key: K, val: unknown | SetKeyAction<V>) => {
     if (key in state) {
-      const newVal = val instanceof Function ? val(mutableData[key]) : val;
-      if (mutableData[key] !== newVal) {
-        mutableData[key] = newVal;
+      const newVal = val instanceof Function ? val(data[key]) : val;
+      if (data[key] !== newVal) {
+        data[key] = newVal;
         run(() => state[key].triggerUpdate());
       }
       return;
@@ -98,7 +87,7 @@ const resso = <Data extends Record<string, unknown>>(
   };
 
   return new Proxy(
-    Object.assign(() => undefined, mutableData) as Store<Data>,
+    Object.assign(() => undefined, data) as Store<Data>,
     {
       get: (_target, key: K) => {
         if (key in actions) {
@@ -114,7 +103,7 @@ const resso = <Data extends Record<string, unknown>>(
             );
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (err) {
-            return mutableData[key];
+            return data[key];
           }
         }
 
@@ -148,7 +137,7 @@ const resso = <Data extends Record<string, unknown>>(
 
         // store(prev => next)
         if (typeof key === 'function') {
-          const newData = key(deepClone(mutableData));
+          const newData = key(data);
           Object.keys(newData).forEach((k) => {
             setKey(k, newData[k]);
           });
