@@ -36,6 +36,10 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 - 非常聪明 🫙
 - 非常小巧 🫧
 
+## 示例
+
+[![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
+
 ## 安装
 
 ```sh
@@ -73,8 +77,6 @@ function App() {
 ```
 
 \* 顶部解构其实是调用 `useState`（Hooks 规则，否则将有 React 报错）
-
-[![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
 
 ## API
 

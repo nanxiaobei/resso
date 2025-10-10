@@ -36,6 +36,10 @@ English · [简体中文](./README.zh-CN.md)
 - Extremely smart 🫙
 - Extremely small 🫧
 
+## Demo
+
+[![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
+
 ## Install
 
 ```sh
@@ -75,8 +79,6 @@ function App() {
 ```
 
 \* destructure at top is calling `useState` (Hooks rules, or may get React error)
-
-[![Edit resso](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/resso-ol8dn?file=/src/App.jsx)
 
 ## API
 
