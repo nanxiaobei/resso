@@ -86,8 +86,11 @@ const resso = <Data extends Record<string, unknown>>(
     }
   };
 
+  function Target() {}
+  const protoKeys = [...Object.getOwnPropertyNames(Target), 'displayName'];
+
   return new Proxy(
-    Object.assign(() => undefined, data) as Store<Data>,
+    Object.assign(Target, data) as Store<Data>,
     {
       get: (_target, key: K) => {
         if (key in actions) {
@@ -107,7 +110,7 @@ const resso = <Data extends Record<string, unknown>>(
           }
         }
 
-        if (__DEV__) {
+        if (__DEV__ && !protoKeys.includes(key as string)) {
           throw new Error(`\`${key as string}\` is not initialized in store`);
         }
       },
