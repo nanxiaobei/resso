@@ -61,13 +61,13 @@ const store = resso({
   count: 0,
   text: 'hello',
   inc() {
-    const { count } = store; // must destructure at top (if use in method)
+    const { count } = store; // must destructure at top (if in method)
     store.count = count + 1;
   },
 });
 
 function App() {
-  const { count } = store; // must destructure at top (if use in UI)
+  const { count } = store; // must destructure at top (if in UI)
 
   return (
     <>

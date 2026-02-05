@@ -59,13 +59,13 @@ const store = resso({
   count: 0,
   text: 'hello',
   inc() {
-    const { count } = store; // 须在顶层解构（若在方法中用到）
+    const { count } = store; // 先在顶部解构（方法中）
     store.count = count + 1;
   },
 });
 
 function App() {
-  const { count } = store; // 须在顶层解构（若在 UI 中用到）
+  const { count } = store; // 先在顶部解构（UI 中）
 
   return (
     <>
