@@ -59,13 +59,14 @@ const store = resso({
   count: 0,
   text: 'hello',
   inc() {
-    const { count } = store; // 先在顶部解构（方法中）
-    store.count = count + 1;
+    store.count += 1;
   },
 });
 
 function App() {
-  const { count } = store; // 先在顶部解构（UI 中）
+  const { count } = store; // 需在顶部解构（组件中）
+  // 或
+  const { count } = store.useStore(); // hooks 规则，更适配 react compiler
 
   return (
     <>
@@ -79,6 +80,14 @@ function App() {
 \* 顶部解构其实是调用 `useState`（Hooks 规则，否则将有 React 报错）
 
 ## API
+
+**获取 state**
+
+```jsx
+const { count } = store; // 需在顶部解构（组件中）
+// or
+const { count } = store.useStore(); // hooks 规则，更适配 react compiler
+```
 
 **更新单个**
 

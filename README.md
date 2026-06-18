@@ -61,13 +61,14 @@ const store = resso({
   count: 0,
   text: 'hello',
   inc() {
-    const { count } = store; // must destructure at top (if in method)
-    store.count = count + 1;
+    store.count += 1;
   },
 });
 
 function App() {
-  const { count } = store; // must destructure at top (if in UI)
+  const { count } = store; // must destructure at top (in component)
+  // or
+  const { count } = store.useStore(); // hooks rules, fit react compiler
 
   return (
     <>
@@ -81,6 +82,14 @@ function App() {
 \* destructure at top is calling `useState` (Hooks rules, or may get React error)
 
 ## API
+
+**Get state**
+
+```jsx
+const { count } = store; // must destructure at top (in component)
+// or
+const { count } = store.useStore(); // hooks rules, fit react compiler
+```
 
 **Single update**
 
