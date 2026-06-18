@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": ["node_modules/", "dist/"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "plugins": ["typescript", "react", "unicorn"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-restricted-globals": ["error", "name", "event", "top"],
+    "object-shorthand": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/exhaustive-deps": "error",
+    "typescript/no-shadow": "error",
+    "react/style-prop-object": "off",
+    "unicorn/no-array-sort": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "ignoreRestSiblings": true,
+        "fix": { "imports": "safe-fix", "variables": "off" }
+      }
+    ],
+    "@typescript-eslint/no-shadow": "error"
+  }
+}
