@@ -8,7 +8,7 @@ const esmOutput = { file: pkg.module, format: 'es' } as const;
 const dtsOutput = { file: pkg.types, format: 'es' } as const;
 
 const cjsTsPlugin = typescript({ compilerOptions: { module: 'nodenext' } });
-const esmTsPlugin = typescript({ compilerOptions: { module: 'esnext' } });
+const esmTsPlugin = typescript({ compilerOptions: { module: 'esnext', moduleResolution: 'bundler' } });
 
 export default [
   { input, output: cjsOutput, plugins: [cjsTsPlugin], external: () => true },

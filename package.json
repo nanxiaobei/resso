@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "build": "rm -rf dist coverage && rollup -c --configPlugin @rollup/plugin-typescript"
+    "build": "rm -rf dist coverage && rollup -c --bundleConfigAsCjs --configPlugin @rollup/plugin-typescript"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
