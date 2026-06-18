@@ -11,7 +11,7 @@ type SetStore<Data> = {
   (payload: SetDataAction<Data>): void;
 };
 
-type Store<Data> = Data & SetStore<Data>;
+type Store<Data> = Data & SetStore<Data> & { useStore: () => Data };
 
 const __DEV__ = process.env.NODE_ENV !== 'production';
 
@@ -46,6 +46,10 @@ const resso = <Data extends Record<string, unknown>>(
   const actions: Actions = {} as Actions;
 
   Object.keys(data).forEach((key: K) => {
+    if (key === 'useStore') {
+      throw new Error('`useStore` is a reserved key');
+    }
+
     const initVal = data[key];
 
     // actions
@@ -81,7 +85,11 @@ const resso = <Data extends Record<string, unknown>>(
       throw new Error(`\`${key as string}\` is an action, can not update`);
     }
 
+    /* v8 ignore next 6 */
     if (__DEV__) {
+      if (key === 'useStore') {
+        throw new Error('`useStore` is a reserved key');
+      }
       throw new Error(`\`${key as string}\` is not initialized in store`);
     }
   };
@@ -89,10 +97,14 @@ const resso = <Data extends Record<string, unknown>>(
   function Target() {}
   const protoKeys = [...Object.getOwnPropertyNames(Target), 'displayName'];
 
-  return new Proxy(
-    Object.assign(Target, data) as Store<Data>,
+  const store = new Proxy(
+    Object.assign(Target, data) as unknown as Store<Data>,
     {
       get: (_target, key: K) => {
+        if (key === 'useStore') {
+          return useStore;
+        }
+
         if (key in actions) {
           return actions[key];
         }
@@ -104,8 +116,7 @@ const resso = <Data extends Record<string, unknown>>(
               state[key].getSnapshot,
               state[key].getSnapshot,
             );
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          } catch (err) {
+          } catch {
             return data[key];
           }
         }
@@ -148,6 +159,12 @@ const resso = <Data extends Record<string, unknown>>(
       },
     } as ProxyHandler<Store<Data>>,
   );
+
+  function useStore() {
+    return store;
+  }
+
+  return store;
 };
 
 resso.config = ({ batch }: { batch: typeof run }) => {
@@ -155,3 +172,4 @@ resso.config = ({ batch }: { batch: typeof run }) => {
 };
 
 export default resso;
+

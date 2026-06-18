@@ -31,27 +31,41 @@ test('resso', () => {
   const { getByText } = render(<App />);
 
   expect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     resso();
   }).toThrow();
 
   expect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    resso({ useStore: 1 });
+  }).toThrow();
+
+  expect(store.useStore()).toBe(store);
+
+  expect(() => {
     // @ts-expect-error
     const { a } = store;
     a?.();
   }).toThrow();
 
   expect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     store.a = 1;
   }).toThrow();
 
   expect(() => {
+    // @ts-expect-error
+    store.useStore = 1;
+  }).toThrow();
+
+  expect(() => {
     store.incOneA = () => -1;
   }).toThrow();
+
+  store.count = 0;
+  expect(store.name).toBeUndefined();
+
+  // @ts-expect-error
+  store(1);
 
   fireEvent.click(getByText('btn1'));
   expect(getByText('1')).toBeInTheDocument();
