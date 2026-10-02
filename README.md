@@ -26,6 +26,11 @@ English · [简体中文](./README.zh-CN.md)
 
 </div>
 
+> [!NOTE]
+> **Breaking change in v0.26.0 (to better fit AI & React Compiler)**:  
+> In React components, always use `const { count } = store.useStore()` to get state.  
+> Direct access `store.count` or `const { count } = store` is now for pure data reads.
+
 ## Introduction
 
 [resso, world’s simplest React state manager →](https://nanxiaobei.medium.com/resso-worlds-simplest-react-state-manager-a3b1b0ccaa99)
@@ -66,42 +71,42 @@ const store = resso({
 });
 
 function App() {
-  const { count } = store; // must destructure at top (in component)
-  // or
-  const { count } = store.useStore(); // hooks rules, fit react compiler
+  const { count, inc } = store.useStore();
 
   return (
     <>
       {count}
-      <button onClick={() => (store.count += 1)}>+</button>
+      <button onClick={inc}>+</button>
+      <button onClick={() => (store.count -= 1)}>-</button>
     </>
   );
 }
 ```
 
-\* destructure at top is calling `useState` (Hooks rules, or may get React error)
-
 ## API
 
-**Get state**
+**Get**
 
 ```jsx
-const { count } = store; // must destructure at top (in component)
-// or
-const { count } = store.useStore(); // hooks rules, fit react compiler
+// Get state, in component
+const { count } = store.useStore();
+
+// Read state, in method
+function doSomething() {
+  const total = store.count * 2;
+  const filtered = store.list.filter((item) => item.name !== '');
+  // ...
+}
 ```
 
-**Single update**
+**Set (triggers re-render)**
 
 ```jsx
+// Single
 store.count = 60;
-
 store('count', (c) => c + 1);
-```
 
-**Multiple update**
-
-```jsx
+// Multiple
 store({
   count: 60,
   text: 'world',
@@ -143,24 +148,30 @@ resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ## Re-render on demand
 
 ```jsx
-// no text update, no re-render
+// No `text` update, no re-render
 function Text() {
-  const { text } = store;
+  const { text } = store.useStore();
   return <p>{text}</p>;
 }
 
-// only when count updates, re-render
+// Only `count` update triggers re-render
 function Count() {
-  const { count } = store;
+  const { count } = store.useStore();
   return <p>{count}</p>;
 }
 
-// no state in UI, no re-render
+// No state in UI, no re-render
 function Control() {
   return (
     <>
       <button onClick={store.inc}>+</button>
-      <button onClick={() => (store.count -= 1)}>-</button>
+      <button
+        onClick={() => {
+          store.count -= 1;
+        }}
+      >
+        -
+      </button>
     </>
   );
 }

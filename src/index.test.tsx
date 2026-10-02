@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import { fireEvent, render } from '@testing-library/react';
 import ReactDOM from 'react-dom';
 import { expect, test } from 'vitest';
@@ -15,11 +15,11 @@ test('resso', () => {
   });
 
   const App = () => {
-    const { count } = store;
+    const { count, incOneA } = store.useStore();
     return (
       <>
         <p>{count}</p>
-        <button onClick={store.incOneA}>btn1</button>
+        <button onClick={incOneA}>btn1</button>
         <button onClick={store.incOneB}>btn2</button>
         <button onClick={() => (store.count += 1)}>btn3</button>
         <button onClick={store.incMoreA}>btn4</button>
@@ -39,13 +39,13 @@ test('resso', () => {
     resso({ useStore: 1 });
   }).toThrow();
 
-  expect(store.useStore()).toBe(store);
+  expect(typeof store.useStore).toBe('function');
+  expect(store.list.map((x) => x)).toEqual([]);
 
-  expect(() => {
-    // @ts-expect-error
-    const { a } = store;
-    a?.();
-  }).toThrow();
+  // @ts-expect-error
+  expect(store.a).toBeUndefined();
+  // @ts-expect-error
+  expect(store.useStore().a).toBeUndefined();
 
   expect(() => {
     // @ts-expect-error
@@ -81,6 +81,12 @@ test('resso', () => {
 
   fireEvent.click(getByText('btn5'));
   expect(getByText('5')).toBeInTheDocument();
+
+  const NonReactiveComp = () => {
+    const count = store.count;
+    return <p>non-reactive: {count}</p>;
+  };
+  expect(() => render(<NonReactiveComp />)).not.toThrow();
 });
 
 test('resso.config', () => {

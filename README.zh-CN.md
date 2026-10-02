@@ -26,6 +26,11 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 
 </div>
 
+> [!NOTE]
+> **v0.26.0 Breaking Change（为了更好地适配 AI 与 React Compiler）**：  
+> 在 React 组件中，始终使用 `const { count } = store.useStore()` 获取 state。  
+> 直接访问 `store.count` 或 `const { count } = store` 现用于纯数据读取。
+
 ## 介绍
 
 [resso，世界上最简单的 React 状态管理器 →](https://zhuanlan.zhihu.com/p/468417292)
@@ -47,6 +52,8 @@ pnpm add resso
 # or
 yarn add resso
 # or
+bun add resso
+# or
 npm i resso
 ```
 
@@ -64,42 +71,42 @@ const store = resso({
 });
 
 function App() {
-  const { count } = store; // 需在顶部解构（组件中）
-  // 或
-  const { count } = store.useStore(); // hooks 规则，更适配 react compiler
+  const { count, inc } = store.useStore();
 
   return (
     <>
       {count}
-      <button onClick={() => (store.count += 1)}>+</button>
+      <button onClick={inc}>+</button>
+      <button onClick={() => (store.count -= 1)}>-</button>
     </>
   );
 }
 ```
 
-\* 顶部解构其实是调用 `useState`（Hooks 规则，否则将有 React 报错）
-
 ## API
 
-**获取 state**
+**Get**
 
 ```jsx
-const { count } = store; // 需在顶部解构（组件中）
-// or
-const { count } = store.useStore(); // hooks 规则，更适配 react compiler
+// 获取 state，在组件中
+const { count } = store.useStore();
+
+// 读取 state，在方法中
+function doSomething() {
+  const total = store.count * 2;
+  const filtered = store.list.filter((item) => item.name !== '');
+  // ...
+}
 ```
 
-**更新单个**
+**Set（触发 re-render）**
 
 ```jsx
+// 单个
 store.count = 60;
-
 store('count', (c) => c + 1);
-```
 
-**更新多个**
-
-```jsx
+// 多个
 store({
   count: 60,
   text: 'world',
@@ -141,24 +148,30 @@ resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在项目入口
 ## 按需 re-render
 
 ```jsx
-// 没有 text 更新，绝不 re-render
+// 无 `text` 更新，不 re-render
 function Text() {
-  const { text } = store;
+  const { text } = store.useStore();
   return <p>{text}</p>;
 }
 
-// 只在 count 更新时 re-render
+// 仅 `count` 更新触发 re-render
 function Count() {
-  const { count } = store;
+  const { count } = store.useStore();
   return <p>{count}</p>;
 }
 
-// 没有 state 在 UI 中，绝不 re-render
+// UI 中无 state，不 re-render
 function Control() {
   return (
     <>
       <button onClick={store.inc}>+</button>
-      <button onClick={() => (store.count -= 1)}>-</button>
+      <button
+        onClick={() => {
+          store.count -= 1;
+        }}
+      >
+        -
+      </button>
     </>
   );
 }

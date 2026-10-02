@@ -28,7 +28,6 @@ const resso = <Data extends Record<string, unknown>>(
   type K = keyof Data;
   type V = Data[K];
   type Actions = Record<K, AnyFn>;
-
   type State = Record<
     K,
     {
@@ -95,7 +94,26 @@ const resso = <Data extends Record<string, unknown>>(
   };
 
   function Target() {}
-  const protoKeys = [...Object.getOwnPropertyNames(Target), 'displayName'];
+
+  const reactiveStore = new Proxy(data, {
+    get: (_target, key: K) => {
+      if (key in actions) {
+        return actions[key];
+      }
+
+      if (key in state) {
+        return useSyncExternalStore(
+          state[key].subscribe,
+          state[key].getSnapshot,
+          state[key].getSnapshot,
+        );
+      }
+    },
+  } as ProxyHandler<Data>);
+
+  function useStore() {
+    return reactiveStore;
+  }
 
   const store = new Proxy(
     Object.assign(Target, data) as unknown as Store<Data>,
@@ -110,19 +128,7 @@ const resso = <Data extends Record<string, unknown>>(
         }
 
         if (key in state) {
-          try {
-            return useSyncExternalStore(
-              state[key].subscribe,
-              state[key].getSnapshot,
-              state[key].getSnapshot,
-            );
-          } catch {
-            return data[key];
-          }
-        }
-
-        if (__DEV__ && !protoKeys.includes(key as string)) {
-          throw new Error(`\`${key as string}\` is not initialized in store`);
+          return data[key];
         }
       },
       set: (_target, key: K, val: V) => {
@@ -160,10 +166,6 @@ const resso = <Data extends Record<string, unknown>>(
     } as ProxyHandler<Store<Data>>,
   );
 
-  function useStore() {
-    return store;
-  }
-
   return store;
 };
 
@@ -172,4 +174,3 @@ resso.config = ({ batch }: { batch: typeof run }) => {
 };
 
 export default resso;
-
