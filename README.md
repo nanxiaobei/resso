@@ -48,12 +48,12 @@ English · [简体中文](./README.zh-CN.md)
 ## Install
 
 ```sh
-pnpm add resso
-# or
-yarn add resso
-# or
 bun add resso
-# or
+#
+pnpm add resso
+#
+yarn add resso
+#
 npm i resso
 ```
 
@@ -165,13 +165,7 @@ function Control() {
   return (
     <>
       <button onClick={store.inc}>+</button>
-      <button
-        onClick={() => {
-          store.count -= 1;
-        }}
-      >
-        -
-      </button>
+      <button onClick={() => (store.count -= 1)}>-</button>
     </>
   );
 }
