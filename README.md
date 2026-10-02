@@ -27,7 +27,7 @@ English · [简体中文](./README.zh-CN.md)
 </div>
 
 > [!NOTE]
-> **Breaking change in v0.26.0 (to better fit AI & React Compiler)**:  
+> **Breaking change since v0.26.0 (to better fit AI & React Compiler)**:  
 > In React components, always use `const { count } = store.useStore()` to get state.  
 > Direct access `store.count` or `const { count } = store` is now for pure data reads.
 
@@ -72,7 +72,6 @@ const store = resso({
 
 function App() {
   const { count, inc } = store.useStore();
-
   return (
     <>
       {count}
@@ -118,7 +117,15 @@ store((s) => ({
 }));
 ```
 
-**Non-state shared vars (Refs)**
+---
+
+**\* `react<18` batch update**
+
+```jsx
+resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
+```
+
+## Shared Refs
 
 Actually, it's not related to resso, it's just JavaScript. You can do it like this:
 
@@ -135,14 +142,6 @@ function App() {
   refs.total = 100;
   return <div />;
 }
-```
-
----
-
-**\* `react<18` batch update**
-
-```jsx
-resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
 ```
 
 ## Re-render on demand

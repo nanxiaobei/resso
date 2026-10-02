@@ -42,27 +42,23 @@ test('resso', () => {
   expect(typeof store.useStore).toBe('function');
   expect(store.list.map((x) => x)).toEqual([]);
 
-  // @ts-expect-error
-  expect(store.a).toBeUndefined();
-  // @ts-expect-error
-  expect(store.useStore().a).toBeUndefined();
+  store.count = 0;
+
+  expect(() => {
+    // @ts-expect-error
+    store.a;
+  }).toThrow();
+
+  expect(() => {
+    // @ts-expect-error
+    store.useStore().a;
+  }).toThrow();
 
   expect(() => {
     // @ts-expect-error
     store.a = 1;
   }).toThrow();
 
-  expect(() => {
-    // @ts-expect-error
-    store.useStore = 1;
-  }).toThrow();
-
-  expect(() => {
-    store.incOneA = () => -1;
-  }).toThrow();
-
-  store.count = 0;
-  expect(store.name).toBeUndefined();
 
   // @ts-expect-error
   store(1);

@@ -27,7 +27,7 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 </div>
 
 > [!NOTE]
-> **v0.26.0 Breaking Change（为了更好地适配 AI 与 React Compiler）**：  
+> **自 v0.26.0 Breaking Change（为了更好地适配 AI 与 React Compiler）**：  
 > 在 React 组件中，始终使用 `const { count } = store.useStore()` 获取 state。  
 > 直接访问 `store.count` 或 `const { count } = store` 现用于纯数据读取。
 
@@ -72,7 +72,6 @@ const store = resso({
 
 function App() {
   const { count, inc } = store.useStore();
-
   return (
     <>
       {count}
@@ -118,7 +117,15 @@ store((s) => ({
 }));
 ```
 
-**非 state 共享变量 (Refs)**
+---
+
+**\* `react<18` 批量更新**
+
+```jsx
+resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在项目入口
+```
+
+## 共享 Refs
 
 事实上它与 resso 无关，只是 JavaScript。你可以这样做：
 
@@ -137,15 +144,7 @@ function App() {
 }
 ```
 
----
-
-**\* `react<18` 批量更新**
-
-```jsx
-resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // 在项目入口
-```
-
-## 按需 re-render
+## 按需 Re-render
 
 ```jsx
 // 无 `text` 更新，不 re-render
