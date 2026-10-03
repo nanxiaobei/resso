@@ -10,11 +10,9 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 <div align="center">
 <h1>🪢 resso</h1>
 
-最简单的 React 状态管理器。_自动按需 re-render ⚡️_
+最简单的 React 状态管理器。_自动处理仅按需 re-render。_
 
 **R**eactive **E**legant **S**hared **S**tore **O**bject
-
-(支持 React 18、React Native、SSR、小程序等)
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nanxiaobei/resso/test.yml?branch=main&style=flat-square)](https://github.com/nanxiaobei/resso/actions/workflows/test.yml)
@@ -37,9 +35,9 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 
 ## 特性
 
-- 非常简单 🪩
-- 非常聪明 🫙
-- 非常小巧 🫧
+- 极其简单
+- 极其聪明
+- 极其小巧
 
 ## 示例
 

@@ -10,11 +10,9 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 <div align="center">
 <h1>🪢 resso</h1>
 
-The simplest React state manager. _Auto on-demand re-render ⚡️_
+The simplest React state manager. _Auto-handle on-demand re-render._
 
 **R**eactive **E**legant **S**hared **S**tore **O**bject
-
-(Support React 18, React Native, SSR, Mini Apps)
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nanxiaobei/resso/test.yml?branch=main&style=flat-square)](https://github.com/nanxiaobei/resso/actions/workflows/test.yml)
@@ -37,9 +35,9 @@ English · [简体中文](./README.zh-CN.md)
 
 ## Features
 
-- Extremely simple 🪩
-- Extremely smart 🫙
-- Extremely small 🫧
+- Extremely simple
+- Extremely smart
+- Extremely small
 
 ## Demo
 
