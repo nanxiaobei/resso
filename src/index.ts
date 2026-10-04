@@ -31,7 +31,7 @@ const resso = <Data extends Record<string, unknown>>(
   if (__DEV__ && !hasWarned) {
     hasWarned = true;
     console.info(
-      '[resso] Since v0.26.0: Please use `const { xxx } = store.useStore()` in components to get state. Direct access `const { xxx } = store` is now for pure data reads. https://github.com/nanxiaobei/resso',
+      '##### [resso] Since v0.26.0: Please use `const { xxx } = store.useStore()` in components to get state. Direct access `const { xxx } = store` is now for pure data reads. https://github.com/nanxiaobei/resso #####',
     );
   }
 
