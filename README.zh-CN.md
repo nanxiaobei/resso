@@ -15,9 +15,9 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 **R**eactive **E**legant **S**hared **S**tore **O**bject
 
 [![npm](https://img.shields.io/npm/v/resso?style=flat-square)](https://www.npmjs.com/package/resso)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nanxiaobei/resso/test.yml?branch=main&style=flat-square)](https://github.com/nanxiaobei/resso/actions/workflows/test.yml)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/resso?style=flat-square)](https://bundlephobia.com/result?p=resso)
 [![React](https://img.shields.io/badge/react-%3E%3D18-blue?style=flat-square)](https://react.dev/)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nanxiaobei/resso/test.yml?branch=main&style=flat-square)](https://github.com/nanxiaobei/resso/actions/workflows/test.yml)
+[![npm bundle size](https://deno.bundlejs.com/badge?q=resso&badge-style=flat-square)](https://bundlejs.com/?q=resso)
 [![npm type definitions](https://img.shields.io/npm/types/typescript?style=flat-square)](https://github.com/nanxiaobei/resso/blob/main/src/index.ts)
 [![GitHub](https://img.shields.io/github/license/nanxiaobei/resso?style=flat-square)](https://github.com/nanxiaobei/resso/blob/main/LICENSE)
 
