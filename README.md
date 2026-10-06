@@ -26,9 +26,10 @@ English · [简体中文](./README.zh-CN.md)
 </div>
 
 > [!NOTE]
-> **Breaking change since v0.26.0 (to better fit AI & React Compiler)**:  
-> In React components, always use `const { count } = store.useStore()` to get state.  
-> Direct access `store.count` or `const { count } = store` is now for pure data reads.
+> **Breaking changes since v0.29.0**:
+>
+> - (To better fit AI & React Compiler) In React components, always use `const { count } = store.useStore()` to get state. Direct access `store.count` or `const { count } = store` is now for pure data reads.
+> - Only supports `react >= 18`.
 
 ## Introduction
 

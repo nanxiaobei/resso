@@ -26,9 +26,10 @@ your online **home screen**. ➫ [🔗 kee.so](https://kee.so/)
 </div>
 
 > [!NOTE]
-> **自 v0.26.0 Breaking Change（为了更好地适配 AI 与 React Compiler）**：  
-> 在 React 组件中，始终使用 `const { count } = store.useStore()` 获取 state。  
-> 直接访问 `store.count` 或 `const { count } = store` 现用于纯数据读取。
+> **自 v0.29.0 Breaking Changes**：
+>
+> - （为了更好地适配 AI 与 React Compiler）在 React 组件中，始终使用 `const { count } = store.useStore()` 获取 state。直接访问 `store.count` 或 `const { count } = store` 现用于纯数据读取。
+> - 仅支持 `react >= 18`。
 
 ## 介绍
 
