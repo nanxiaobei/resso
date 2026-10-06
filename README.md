@@ -115,14 +115,6 @@ store((s) => ({
 }));
 ```
 
----
-
-**\* `react<18` batch update**
-
-```jsx
-resso.config({ batch: ReactDOM.unstable_batchedUpdates }); // at app entry
-```
-
 ## Shared Refs
 
 Actually, it's not related to resso, it's just JavaScript. You can do it like this:

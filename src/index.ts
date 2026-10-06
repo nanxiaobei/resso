@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'use-sync-external-store/shim';
+import { useSyncExternalStore } from 'react';
 
 type VoidFn = () => void;
 type AnyFn = (...args: unknown[]) => unknown;
@@ -18,11 +18,13 @@ const __DEV__ = process.env.NODE_ENV !== 'production';
 const isObj = (val: unknown) =>
   Object.prototype.toString.call(val) === '[object Object]';
 
-let run = (fn: VoidFn) => {
-  fn();
-};
-
 let hasWarned = false;
+let methodDepth = 0;
+
+const protoKeys = new Set([
+  ...Object.getOwnPropertyNames(() => {}),
+  'displayName',
+]);
 
 const resso = <Data extends Record<string, unknown>>(
   data: Data,
@@ -51,13 +53,16 @@ const resso = <Data extends Record<string, unknown>>(
     throw new Error('object required');
   }
 
+  const obj = { ...data };
   const state: State = {} as State;
   const actions: Actions = {} as Actions;
 
-  Object.keys(data).forEach((key: K) => {
-    if (key === 'useStore') throw new Error('`useStore` is a reserved key');
+  Object.keys(obj).forEach((key: K) => {
+    if (__DEV__ && key === 'useStore') {
+      throw new Error('`useStore` is a reserved key');
+    }
 
-    const initVal = data[key];
+    const initVal = obj[key];
 
     // state
     if (typeof initVal !== 'function') {
@@ -67,28 +72,33 @@ const resso = <Data extends Record<string, unknown>>(
           setters.add(setter);
           return () => setters.delete(setter);
         },
-        getSnapshot: () => data[key],
+        getSnapshot: () => obj[key],
         triggerUpdate: () => setters.forEach((setter) => setter()),
       };
       return;
     }
 
     // actions
-    actions[key] = initVal as AnyFn;
+    const newAction = (...args: unknown[]) => {
+      methodDepth++;
+      try {
+        return (initVal as AnyFn)(...args);
+      } finally {
+        methodDepth--;
+      }
+    };
+    actions[key] = newAction;
+    obj[key] = newAction as Data[keyof Data];
   });
 
-  function Target() {}
-  const protoKeys = new Set([
-    ...Object.getOwnPropertyNames(Target),
-    'displayName',
-  ]);
+  const Target = () => {};
 
   const setValue = (key: K, val: unknown | SetKeyAction<V>) => {
     if (key in state) {
-      const newVal = val instanceof Function ? val(data[key]) : val;
-      if (data[key] !== newVal) {
-        data[key] = newVal;
-        run(() => state[key].triggerUpdate());
+      const newVal = typeof val === 'function' ? val(obj[key]) : val;
+      if (obj[key] !== newVal) {
+        obj[key] = newVal;
+        state[key].triggerUpdate();
       }
       return;
     }
@@ -98,7 +108,9 @@ const resso = <Data extends Record<string, unknown>>(
       if (key in actions) {
         throw new Error(`\`${key as string}\` is an action, can not update`);
       }
-      if (key === 'useStore') throw new Error('`useStore` is a reserved key');
+      if (key === 'useStore') {
+        throw new Error('`useStore` is a reserved key');
+      }
       if (!protoKeys.has(key as string)) {
         throw new Error(`\`${key as string}\` is not initialized in store`);
       }
@@ -106,11 +118,11 @@ const resso = <Data extends Record<string, unknown>>(
   };
 
   const store = new Proxy(
-    Object.assign(Target, data) as unknown as Store<Data>,
+    Object.assign(Target, obj) as unknown as Store<Data>,
     {
       get: (_target, key: K) => {
         if (key === 'useStore') return useStore;
-        if (key in data) return data[key];
+        if (key in obj) return obj[key];
 
         /* v8 ignore next 3 */
         if (__DEV__ && !protoKeys.has(key as string)) {
@@ -134,28 +146,26 @@ const resso = <Data extends Record<string, unknown>>(
 
         // store({ key: val })
         if (isObj(key)) {
-          const newData = key as Data;
-          Object.keys(newData).forEach((k) => {
-            setValue(k, newData[k]);
+          const newObj = key as Data;
+          Object.keys(newObj).forEach((k) => {
+            setValue(k, newObj[k]);
           });
           return;
         }
 
         // store(prev => next)
         if (typeof key === 'function') {
-          const newData = key(data);
-          Object.keys(newData).forEach((k) => {
-            setValue(k, newData[k]);
+          const newObj = key(obj);
+          Object.keys(newObj).forEach((k) => {
+            setValue(k, newObj[k]);
           });
         }
       },
     } as ProxyHandler<Store<Data>>,
   );
 
-  const hookStore = new Proxy(data, {
+  const hookStore = new Proxy(obj, {
     get: (_target, key: K) => {
-      if (key in actions) return actions[key];
-
       if (key in state) {
         return useSyncExternalStore(
           state[key].subscribe,
@@ -164,9 +174,13 @@ const resso = <Data extends Record<string, unknown>>(
         );
       }
 
+      if (key in actions) return actions[key];
+
       /* v8 ignore next 6 */
       if (__DEV__) {
-        if (key === 'useStore') throw new Error('`useStore` is a reserved key');
+        if (key === 'useStore') {
+          throw new Error('`useStore` is a reserved key');
+        }
         if (!protoKeys.has(key as string)) {
           throw new Error(`\`${key as string}\` is not initialized in store`);
         }
@@ -174,13 +188,14 @@ const resso = <Data extends Record<string, unknown>>(
     },
   } as ProxyHandler<Data>);
 
-  const useStore = () => hookStore;
+  const useStore = () => {
+    if (methodDepth > 0) {
+      throw new Error('`useStore` cannot be called inside store functions');
+    }
+    return hookStore;
+  };
 
   return store;
-};
-
-resso.config = ({ batch }: { batch: typeof run }) => {
-  run = batch;
 };
 
 export default resso;

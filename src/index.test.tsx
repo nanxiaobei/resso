@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom/vitest';
 import { fireEvent, render } from '@testing-library/react';
-import ReactDOM from 'react-dom';
 import { expect, test } from 'vitest';
 import resso from './index';
 
@@ -46,11 +45,13 @@ test('resso', () => {
 
   expect(() => {
     // @ts-expect-error
+    // oxlint-disable-next-line no-unused-expressions
     store.a;
   }).toThrow();
 
   expect(() => {
     // @ts-expect-error
+    // oxlint-disable-next-line no-unused-expressions
     store.useStore().a;
   }).toThrow();
 
@@ -59,6 +60,12 @@ test('resso', () => {
     store.a = 1;
   }).toThrow();
 
+  expect(() => {
+    const s = resso({
+      action: () => s.useStore(),
+    });
+    s.action();
+  }).toThrow();
 
   // @ts-expect-error
   store(1);
@@ -83,8 +90,4 @@ test('resso', () => {
     return <p>non-reactive: {count}</p>;
   };
   expect(() => render(<NonReactiveComp />)).not.toThrow();
-});
-
-test('resso.config', () => {
-  resso.config({ batch: ReactDOM.unstable_batchedUpdates });
 });
