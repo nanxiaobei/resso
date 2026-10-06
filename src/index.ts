@@ -79,7 +79,7 @@ const resso = <Data extends Record<string, unknown>>(
     }
 
     // actions
-    const newAction = (...args: unknown[]) => {
+    actions[key] = (...args: unknown[]) => {
       methodDepth++;
       try {
         return (initVal as AnyFn)(...args);
@@ -87,8 +87,7 @@ const resso = <Data extends Record<string, unknown>>(
         methodDepth--;
       }
     };
-    actions[key] = newAction;
-    obj[key] = newAction as Data[keyof Data];
+    obj[key] = actions[key] as Data[keyof Data];
   });
 
   const Target = () => {};
